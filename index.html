@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convocatória Estrela</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#0b0b0c;
+  --surface:#19191a;
+  --border:#2d2d2e;
+  --yellow:#f4c60c;
+  --yellow-deep:#caa000;
+  --text:#f5f3ea;
+  --muted:#9a958c;
+  --danger:#e5484d;
+  --good:#3ecf8e;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system-ui,sans-serif;}
+#app{max-width:640px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:20px;position:relative;}
+.loading{padding:80px 16px;text-align:center;color:var(--muted);font-family:'Barlow',sans-serif;font-size:14px;}
+
+.top-bar{display:flex;justify-content:flex-end;align-items:center;gap:10px;}
+.edit-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bg);background:var(--yellow);padding:4px 10px;border-radius:20px;}
+.lock-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;padding:6px 11px;border-radius:8px;cursor:pointer;}
+.lock-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+.save-indicator{font-size:11px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;padding:4px 9px;border-radius:20px;display:inline-flex;align-items:center;white-space:nowrap;}
+.save-indicator.saved{color:var(--good);background:rgba(62,207,142,.12);}
+.save-indicator.saving{color:var(--yellow);background:rgba(244,198,12,.12);}
+.save-indicator.error{color:var(--danger);background:rgba(229,72,77,.12);}
+.save-indicator.local{color:var(--muted);background:rgba(255,255,255,.05);}
+
+.header{display:flex;align-items:center;gap:14px;}
+.crest{flex:0 0 auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}
+.header-text{flex:1;min-width:0;}
+.eyebrow{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--yellow);text-transform:uppercase;margin:0 0 2px;}
+.title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(26px,7vw,36px);letter-spacing:.02em;text-transform:uppercase;margin:0;color:var(--text);text-wrap:balance;line-height:1.05;}
+.subtitle{margin:4px 0 0;font-size:12px;color:var(--muted);}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media (max-width:480px){.info-grid{grid-template-columns:1fr;}}
+.field{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px;}
+.field-label{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);margin-bottom:4px;}
+.field-input{width:100%;background:transparent;border:none;color:var(--text);font-family:'Barlow',sans-serif;font-weight:600;font-size:15px;padding:2px 0;outline:none;font-variant-numeric:tabular-nums;}
+.field-input::placeholder{color:var(--muted);font-weight:500;}
+.field-value{font-family:'Barlow',sans-serif;font-weight:600;font-size:15px;color:var(--text);font-variant-numeric:tabular-nums;}
+.muted-val{color:var(--muted);font-weight:500;font-style:italic;}
+.field.full{grid-column:1/-1;}
+
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:2px solid var(--yellow);padding-bottom:8px;}
+.section-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;margin:0;}
+.counter-pill{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;color:var(--bg);background:var(--yellow);border-radius:20px;padding:3px 10px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.roster-subhead{font-family:'Barlow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;}
+
+.quick-actions{display:flex;gap:14px;margin:8px 0 10px;}
+.link-btn{background:none;border:none;color:var(--muted);font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:3px;}
+.link-btn:hover{color:var(--yellow);}
+
+.roster{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;}
+@media (max-width:480px){.roster{grid-template-columns:1fr;}}
+.player-row{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 10px;}
+.player-row.off{opacity:.55;background:transparent;}
+input[type=checkbox].player-check{appearance:none;-webkit-appearance:none;width:20px;height:20px;flex:0 0 auto;border-radius:6px;border:2px solid var(--yellow);background:transparent;cursor:pointer;position:relative;margin:0;}
+input[type=checkbox].player-check:checked{background:var(--yellow);}
+input[type=checkbox].player-check:checked::after{content:'';position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid var(--bg);border-width:0 2.5px 2.5px 0;transform:rotate(45deg);}
+.player-num{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;color:var(--yellow);width:20px;text-align:center;flex:0 0 auto;font-variant-numeric:tabular-nums;}
+.player-row.off .player-num{color:var(--muted);}
+.player-name{flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;outline:none;padding:2px 0;}
+.player-name-text{flex:1;min-width:0;font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;color:var(--text);}
+.player-remove{flex:0 0 auto;background:none;border:none;color:var(--muted);font-size:16px;line-height:1;cursor:pointer;padding:4px;border-radius:6px;}
+.player-remove:hover{color:var(--danger);background:rgba(229,72,77,.1);}
+
+.add-row{display:flex;gap:8px;margin-top:10px;}
+.add-input{flex:1;background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;outline:none;}
+.add-input:focus{border-color:var(--yellow);}
+.add-btn{background:var(--yellow);color:var(--bg);border:none;border-radius:10px;padding:0 16px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;text-transform:uppercase;cursor:pointer;}
+.add-btn:hover{background:var(--yellow-deep);}
+
+.banner{background:var(--yellow);color:var(--bg);border-radius:14px;padding:18px 16px;text-align:center;}
+.banner-tag{font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 6px;}
+.banner-q{font-family:'Barlow',sans-serif;font-weight:600;font-size:12px;opacity:.75;margin:0 0 2px;text-transform:uppercase;letter-spacing:.06em;}
+.banner-chant{font-family:'Oswald',sans-serif;font-weight:700;font-size:22px;letter-spacing:.04em;text-transform:uppercase;margin:0;}
+
+.print-btn{align-self:flex-start;background:transparent;border:1.5px solid var(--yellow);color:var(--yellow);border-radius:10px;padding:9px 16px;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
+.print-btn:hover{background:var(--yellow);color:var(--bg);}
+
+.hint{font-size:11px;color:var(--muted);margin:0;}
+.staff-link-row{display:flex;justify-content:center;margin-top:4px;}
+.staff-link{background:none;border:none;color:var(--muted);font-family:'Barlow',sans-serif;font-size:11px;cursor:pointer;padding:6px 10px;text-decoration:underline;text-underline-offset:3px;opacity:.65;}
+.staff-link:hover{opacity:1;color:var(--yellow);}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:320px;width:100%;display:flex;flex-direction:column;gap:12px;}
+.modal-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;text-transform:uppercase;margin:0;color:var(--text);}
+.modal-sub{font-size:12px;color:var(--muted);margin:0;}
+.modal-input{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-family:'Barlow',sans-serif;font-size:16px;letter-spacing:.15em;outline:none;text-align:center;}
+.modal-input:focus{border-color:var(--yellow);}
+.modal-error{color:var(--danger);font-size:12px;margin:0;min-height:14px;}
+.modal-actions{display:flex;gap:8px;}
+.modal-btn{flex:1;border-radius:10px;padding:10px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;text-transform:uppercase;cursor:pointer;border:none;}
+.modal-btn.primary{background:var(--yellow);color:var(--bg);}
+.modal-btn.primary:hover{background:var(--yellow-deep);}
+.modal-btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.modal-btn.ghost:hover{color:var(--text);border-color:var(--muted);}
+
+@media print{
+  body{background:#fff;color:#111;}
+  .no-print{display:none!important;}
+  .player-row.off{display:none;}
+  .field,.player-row{border-color:#ccc;background:#fff;}
+  .field-input,.field-value,.player-name,.player-name-text{color:#111;}
+  .counter-pill{background:#111;color:#fff;}
+  .banner{background:#fff;border:2px solid #111;color:#111;}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function appMain(){
+  var PIN_HASH = 'a2722a17de55e08d6546b1b6d001786d15ce63b658fc7ed226caf9d53834c1d3';
+
+  var syncKey = null;
+  try{ syncKey = localStorage.getItem('syncKey') || null; }catch(e){ syncKey = null; }
+
+  var DEFAULT_STATE = {
+    local: '', adversario: '', data: '', horario: '', staff: '',
+    players: [
+      {id:'p1', name:'Felipe', call:true},
+      {id:'p2', name:'Rafa', call:true},
+      {id:'p3', name:'Manu', call:true},
+      {id:'p4', name:'Lorenzo', call:true},
+      {id:'p5', name:'Gustavo', call:true},
+      {id:'p6', name:'Santiago A', call:true},
+      {id:'p7', name:'Santiago', call:true},
+      {id:'p8', name:'Tiago', call:true},
+      {id:'p9', name:'Leo', call:true},
+      {id:'p10', name:'Gabriel', call:true},
+      {id:'p11', name:'João Vítor', call:true},
+      {id:'p12', name:'André', call:true},
+      {id:'p13', name:'Clarisse', call:true},
+      {id:'p14', name:'Bernardo', call:true},
+      {id:'p15', name:'Ferreira', call:true}
+    ]
+  };
+
+  var root = document.getElementById('app');
+  var saveTimer = null;
+  var saveStatus = 'idle';
+  var loaded = false;
+  var state = null;
+
+  var unlocked = false;
+  try{ unlocked = sessionStorage.getItem('staffUnlocked') === '1'; }catch(e){ unlocked = false; }
+  var modalOpen = false;
+  var modalStage = 'pin';
+  var modalErrorMsg = '';
+  var saveErrorDetail = '';
+
+  function uid(){ return 'p' + Math.random().toString(36).slice(2,9); }
+  function pad(n){ return n<10 ? '0'+n : ''+n; }
+  function attr(str){
+    return String(str==null?'':str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function digitsOnly(s){ return String(s||'').replace(/\D/g,''); }
+  function formatDateDigits(d){
+    d = d.slice(0,8);
+    if(d.length<=2){ return d; }
+    if(d.length<=4){ return d.slice(0,2)+'/'+d.slice(2); }
+    return d.slice(0,2)+'/'+d.slice(2,4)+'/'+d.slice(4);
+  }
+  function formatTimeDigits(d){
+    d = d.slice(0,4);
+    if(d.length<=2){ return d; }
+    return d.slice(0,2)+':'+d.slice(2);
+  }
+  function applyMaskedInput(inp, formatter){
+    var caret = inp.selectionStart == null ? inp.value.length : inp.selectionStart;
+    var digitsBefore = digitsOnly(inp.value.slice(0,caret)).length;
+    var formatted = formatter(digitsOnly(inp.value));
+    inp.value = formatted;
+    var seen = 0, pos = formatted.length;
+    for(var i=0;i<formatted.length;i++){
+      if(/\d/.test(formatted[i])){ seen++; }
+      if(seen===digitsBefore){ pos = i+1; break; }
+    }
+    if(digitsBefore===0){ pos = 0; }
+    try{ inp.setSelectionRange(pos,pos); }catch(e){}
+    return formatted;
+  }
+
+  function persistDraft(){
+    try{
+      sessionStorage.setItem('draftState', JSON.stringify(state));
+      sessionStorage.setItem('draftDirty', '1');
+    }catch(e){}
+  }
+  function clearDraft(){
+    try{
+      sessionStorage.removeItem('draftState');
+      sessionStorage.removeItem('draftDirty');
+    }catch(e){}
+  }
+
+  function sha256Hex(str){
+    var enc = new TextEncoder().encode(str);
+    return crypto.subtle.digest('SHA-256', enc).then(function(buf){
+      var bytes = new Uint8Array(buf);
+      var hex = '';
+      for(var i=0;i<bytes.length;i++){
+        var h = bytes[i].toString(16);
+        if(h.length<2){ h = '0'+h; }
+        hex += h;
+      }
+      return hex;
+    });
+  }
+
+  function crestSVG(){
+    return '<img class="crest" src="crest.png" width="56" height="56" alt="Estrela Afonsoeirense">';
+  }
+
+  function statusClass(){
+    if(saveStatus==='saving') return 'saving';
+    if(saveStatus==='saved') return 'saved';
+    if(saveStatus==='error') return 'error';
+    return 'local';
+  }
+  function statusText(){
+    if(saveStatus==='saving') return 'A guardar…';
+    if(saveStatus==='saved') return 'Guardado';
+    if(saveStatus==='error') return 'Falha ao guardar' + (saveErrorDetail ? ' (' + saveErrorDetail + ')' : '');
+    if(saveStatus==='local') return 'Sem chave de sincronização';
+    return 'Pronto para editar';
+  }
+
+  function field(key,label,placeholder,inputmode){
+    var im = inputmode ? ' inputmode="'+inputmode+'"' : '';
+    return '<div class="field">'
+      + '<label class="field-label" for="f-'+key+'">'+label+'</label>'
+      + '<input id="f-'+key+'" type="text" class="field-input" data-field="'+key+'"'+im+' value="'+attr(state[key])+'" placeholder="'+placeholder+'">'
+      + '</div>';
+  }
+
+  function readField(label,value,placeholder){
+    var shown = value ? attr(value) : '<span class="muted-val">'+placeholder+'</span>';
+    return '<div class="field">'
+      + '<span class="field-label">'+label+'</span>'
+      + '<div class="field-value">'+shown+'</div>'
+      + '</div>';
+  }
+
+  function headerHTML(subtitle){
+    return '<div class="header">'
+      + crestSVG()
+      + '<div class="header-text">'
+        + '<p class="eyebrow">Estrela Afonsoeirense</p>'
+        + '<h1 class="title">Convocatória</h1>'
+        + '<p class="subtitle">'+subtitle+'</p>'
+      + '</div>'
+    + '</div>';
+  }
+
+  function bannerHTML(){
+    return '<div class="banner">'
+      + '<p class="banner-tag">Um por todos, todos por um</p>'
+      + '<p class="banner-q">Quem nós somos?</p>'
+      + '<p class="banner-chant">Estrela! Estrela! Estrela!</p>'
+    + '</div>';
+  }
+
+  function modalHTML(){
+    if(!modalOpen){ return ''; }
+    if(modalStage === 'token'){
+      return '<div class="modal-overlay" id="modal-overlay">'
+        + '<div class="modal-box">'
+          + '<h3 class="modal-title">Chave de sincronização</h3>'
+          + '<p class="modal-sub">Este dispositivo ainda não tem a chave que permite guardar alterações para todos. Cole a chave fornecida pelo treinador (fica guardada só neste navegador).</p>'
+          + '<input type="password" class="modal-input" id="token-input" placeholder="Chave" style="letter-spacing:normal;font-size:13px;">'
+          + '<p class="modal-error">'+attr(modalErrorMsg)+'</p>'
+          + '<div class="modal-actions">'
+            + '<button type="button" class="modal-btn ghost" id="modal-cancel">Cancelar</button>'
+            + '<button type="button" class="modal-btn primary" id="modal-submit-token">Guardar</button>'
+          + '</div>'
+        + '</div>'
+      + '</div>';
+    }
+    return '<div class="modal-overlay" id="modal-overlay">'
+      + '<div class="modal-box">'
+        + '<h3 class="modal-title">Área do staff</h3>'
+        + '<p class="modal-sub">Introduza o código para editar a convocatória.</p>'
+        + '<input type="password" inputmode="numeric" class="modal-input" id="pin-input" placeholder="••••••">'
+        + '<p class="modal-error">'+attr(modalErrorMsg)+'</p>'
+        + '<div class="modal-actions">'
+          + '<button type="button" class="modal-btn ghost" id="modal-cancel">Cancelar</button>'
+          + '<button type="button" class="modal-btn primary" id="modal-submit">Entrar</button>'
+        + '</div>'
+      + '</div>'
+    + '</div>';
+  }
+
+  function loadingBody(){
+    return '<div class="loading">A carregar convocatória…</div>';
+  }
+
+  function editBody(){
+    var total = state.players.length;
+    var called = 0;
+    var rows = state.players.map(function(p){
+      if(p.call){ called++; }
+      var num = p.call ? pad(called) : '–';
+      return '<div class="player-row ' + (p.call?'':'off') + '">'
+        + '<input type="checkbox" class="player-check" data-id="' + p.id + '" ' + (p.call?'checked':'') + '>'
+        + '<span class="player-num">' + num + '</span>'
+        + '<input type="text" class="player-name" data-id="' + p.id + '" value="' + attr(p.name) + '" placeholder="Nome do jogador">'
+        + '<button type="button" class="player-remove" data-id="' + p.id + '" aria-label="Remover jogador" title="Remover">×</button>'
+        + '</div>';
+    }).join('');
+
+    return ''
+      + '<div class="top-bar no-print">'
+        + '<span class="edit-badge">Modo edição</span>'
+        + '<span id="save-indicator" class="save-indicator ' + statusClass() + '">' + statusText() + '</span>'
+        + '<button type="button" class="lock-btn" id="lock-btn">Bloquear</button>'
+      + '</div>'
+      + '<div class="staff-link-row no-print"><button type="button" class="staff-link" id="reset-token-link">Trocar chave de sincronização</button></div>'
+      + headerHTML('Toque nos campos para editar · marque quem vai a jogo')
+      + '<div class="info-grid">'
+        + field('local','Local do jogo','Ex: Campo Municipal')
+        + field('adversario','Adversário','Nome da equipa adversária')
+        + field('data','Data','DD/MM/AAAA','numeric')
+        + field('horario','Horário do jogo','HH:MM','numeric')
+        + '<div class="field full">'
+          + '<label class="field-label" for="f-staff">Staff / Contacto</label>'
+          + '<input id="f-staff" type="text" class="field-input" data-field="staff" value="' + attr(state.staff) + '" placeholder="Nome e contacto do responsável">'
+        + '</div>'
+      + '</div>'
+      + '<div>'
+        + '<div class="section-head">'
+          + '<h2 class="section-title">Jogadores convocados</h2>'
+          + '<span class="counter-pill">' + called + ' / ' + total + '</span>'
+        + '</div>'
+        + '<div class="quick-actions no-print">'
+          + '<button type="button" class="link-btn" id="mark-all">Marcar todos</button>'
+          + '<button type="button" class="link-btn" id="unmark-all">Desmarcar todos</button>'
+        + '</div>'
+        + '<div class="roster">' + rows + '</div>'
+        + '<form class="add-row no-print" id="add-form">'
+          + '<input type="text" class="add-input" id="add-input" placeholder="Adicionar jogador ao plantel…" autocomplete="off">'
+          + '<button type="submit" class="add-btn">Adicionar</button>'
+        + '</form>'
+      + '</div>'
+      + bannerHTML()
+      + '<button type="button" class="print-btn no-print" id="print-btn">Imprimir / Partilhar</button>'
+      + '<p class="hint no-print">As alterações ficam guardadas automaticamente, visíveis para todos em segundos.</p>';
+  }
+
+  function readBody(){
+    var called = [];
+    var notCalled = [];
+    state.players.forEach(function(p){
+      if(p.call){ called.push(p); } else { notCalled.push(p); }
+    });
+
+    var calledRows = called.map(function(p,i){
+      return '<div class="player-row">'
+        + '<span class="player-num">' + pad(i+1) + '</span>'
+        + '<span class="player-name-text">' + attr(p.name) + '</span>'
+        + '</div>';
+    }).join('');
+
+    var notCalledSection = '';
+    if(notCalled.length){
+      var notCalledRows = notCalled.map(function(p){
+        return '<div class="player-row off">'
+          + '<span class="player-num">–</span>'
+          + '<span class="player-name-text">' + attr(p.name) + '</span>'
+          + '</div>';
+      }).join('');
+      notCalledSection = '<p class="roster-subhead">Não convocados desta vez</p><div class="roster">' + notCalledRows + '</div>';
+    }
+
+    return ''
+      + headerHTML('Verifique se o seu educando foi convocado para este jogo')
+      + '<div class="info-grid">'
+        + readField('Local do jogo', state.local, 'A confirmar')
+        + readField('Adversário', state.adversario, 'A confirmar')
+        + readField('Data', state.data, 'A confirmar')
+        + readField('Horário do jogo', state.horario, 'A confirmar')
+        + '<div class="field full">'
+          + '<span class="field-label">Staff / Contacto</span>'
+          + '<div class="field-value">' + (state.staff ? attr(state.staff) : '<span class="muted-val">A confirmar</span>') + '</div>'
+        + '</div>'
+      + '</div>'
+      + '<div>'
+        + '<div class="section-head">'
+          + '<h2 class="section-title">Convocados</h2>'
+          + '<span class="counter-pill">' + called.length + ' / ' + state.players.length + '</span>'
+        + '</div>'
+        + '<div class="roster">' + calledRows + '</div>'
+        + notCalledSection
+      + '</div>'
+      + bannerHTML()
+      + '<button type="button" class="print-btn no-print" id="print-btn">Imprimir / Partilhar</button>'
+      + '<div class="staff-link-row no-print"><button type="button" class="staff-link" id="staff-link">Área do staff</button></div>';
+  }
+
+  function bodyHTML(){
+    if(!loaded){ return loadingBody(); }
+    return (unlocked ? editBody() : readBody()) + modalHTML();
+  }
+
+  function attachEvents(){
+    root.querySelectorAll('.field-input[data-field]').forEach(function(inp){
+      var key = inp.dataset.field;
+      if(key === 'data'){
+        inp.addEventListener('input', function(){
+          state.data = applyMaskedInput(inp, formatDateDigits);
+          persistDraft();
+          scheduleSave();
+        });
+      } else if(key === 'horario'){
+        inp.addEventListener('input', function(){
+          state.horario = applyMaskedInput(inp, formatTimeDigits);
+          persistDraft();
+          scheduleSave();
+        });
+      } else {
+        inp.addEventListener('input', function(){
+          state[key] = inp.value;
+          persistDraft();
+          scheduleSave();
+        });
+      }
+    });
+    root.querySelectorAll('.player-name[data-id]').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var p = state.players.find(function(x){return x.id===inp.dataset.id;});
+        if(p){ p.name = inp.value; persistDraft(); scheduleSave(); }
+      });
+    });
+    root.querySelectorAll('.player-check[data-id]').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var p = state.players.find(function(x){return x.id===cb.dataset.id;});
+        if(p){ p.call = cb.checked; persistDraft(); render(); saveNow(); }
+      });
+    });
+    root.querySelectorAll('.player-remove[data-id]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        state.players = state.players.filter(function(x){return x.id!==btn.dataset.id;});
+        persistDraft();
+        render(); saveNow();
+      });
+    });
+    var markAll = root.querySelector('#mark-all');
+    if(markAll){ markAll.addEventListener('click', function(){
+      state.players.forEach(function(p){p.call=true;});
+      persistDraft();
+      render(); saveNow();
+    }); }
+    var unmarkAll = root.querySelector('#unmark-all');
+    if(unmarkAll){ unmarkAll.addEventListener('click', function(){
+      state.players.forEach(function(p){p.call=false;});
+      persistDraft();
+      render(); saveNow();
+    }); }
+    var addForm = root.querySelector('#add-form');
+    if(addForm){ addForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var inp = root.querySelector('#add-input');
+      var name = inp.value.trim();
+      if(!name){ return; }
+      state.players.push({id: uid(), name: name, call: true});
+      persistDraft();
+      render(); saveNow();
+      var newInp = root.querySelector('#add-input');
+      if(newInp){ newInp.focus(); }
+    }); }
+    var printBtn = root.querySelector('#print-btn');
+    if(printBtn){ printBtn.addEventListener('click', function(){ window.print(); }); }
+
+    var lockBtn = root.querySelector('#lock-btn');
+    if(lockBtn){ lockBtn.addEventListener('click', function(){
+      unlocked = false;
+      try{ sessionStorage.removeItem('staffUnlocked'); }catch(e){}
+      render();
+    }); }
+
+    var resetTokenLink = root.querySelector('#reset-token-link');
+    if(resetTokenLink){ resetTokenLink.addEventListener('click', function(){
+      modalOpen = true;
+      modalStage = 'token';
+      modalErrorMsg = '';
+      render();
+      var tokenInput = root.querySelector('#token-input');
+      if(tokenInput){ tokenInput.focus(); }
+    }); }
+
+    var staffLink = root.querySelector('#staff-link');
+    if(staffLink){ staffLink.addEventListener('click', function(){
+      modalOpen = true;
+      modalErrorMsg = '';
+      render();
+      var pinInput = root.querySelector('#pin-input');
+      if(pinInput){ pinInput.focus(); }
+    }); }
+
+    var overlay = root.querySelector('#modal-overlay');
+    if(overlay){ overlay.addEventListener('click', function(e){
+      if(e.target === overlay){
+        modalOpen = false;
+        render();
+      }
+    }); }
+
+    var modalCancel = root.querySelector('#modal-cancel');
+    if(modalCancel){ modalCancel.addEventListener('click', function(){
+      modalOpen = false;
+      render();
+    }); }
+
+    var modalSubmit = root.querySelector('#modal-submit');
+    if(modalSubmit){ modalSubmit.addEventListener('click', function(){ submitPin(); }); }
+
+    var pinInput = root.querySelector('#pin-input');
+    if(pinInput){ pinInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){ submitPin(); }
+    }); }
+
+    var modalSubmitToken = root.querySelector('#modal-submit-token');
+    if(modalSubmitToken){ modalSubmitToken.addEventListener('click', function(){ submitToken(); }); }
+
+    var tokenInput = root.querySelector('#token-input');
+    if(tokenInput){ tokenInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){ submitToken(); }
+    }); }
+  }
+
+  function submitPin(){
+    var pinInput = root.querySelector('#pin-input');
+    var pin = pinInput ? pinInput.value : '';
+    sha256Hex(pin).then(function(hex){
+      if(hex === PIN_HASH){
+        unlocked = true;
+        try{ sessionStorage.setItem('staffUnlocked','1'); }catch(e){}
+        modalErrorMsg = '';
+        if(syncKey){
+          modalOpen = false;
+        } else {
+          modalStage = 'token';
+        }
+        render();
+        var tokenInput = root.querySelector('#token-input');
+        if(tokenInput){ tokenInput.focus(); }
+      } else {
+        modalErrorMsg = 'Código incorreto';
+        render();
+        var again = root.querySelector('#pin-input');
+        if(again){ again.focus(); }
+      }
+    });
+  }
+
+  function submitToken(){
+    var tokenInput = root.querySelector('#token-input');
+    var value = tokenInput ? tokenInput.value.trim() : '';
+    if(!value){
+      modalErrorMsg = 'Cole a chave antes de continuar';
+      render();
+      return;
+    }
+    syncKey = value;
+    try{ localStorage.setItem('syncKey', syncKey); }catch(e){}
+    modalOpen = false;
+    modalStage = 'pin';
+    modalErrorMsg = '';
+    render();
+    saveNow();
+  }
+
+  function render(){
+    root.innerHTML = bodyHTML();
+    attachEvents();
+  }
+
+  function updateIndicator(){
+    var el = document.getElementById('save-indicator');
+    if(!el){ return; }
+    el.className = 'save-indicator ' + statusClass();
+    el.textContent = statusText();
+  }
+
+  function scheduleSave(){
+    saveStatus = 'saving';
+    updateIndicator();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveNow, 900);
+  }
+
+  var saveChain = Promise.resolve();
+
+  function saveNow(){
+    clearTimeout(saveTimer);
+
+    if(!syncKey){
+      saveStatus = 'local';
+      updateIndicator();
+      return;
+    }
+
+    saveChain = saveChain.then(function(){ return performSave(); });
+  }
+
+  function performSave(){
+    saveStatus = 'saving';
+    updateIndicator();
+
+    return fetch('/api/state', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ syncKey: syncKey, state: state })
+    }).then(function(r){
+      if(r.status === 401){ throw {authFailed:true, status:401}; }
+      if(!r.ok){ return r.text().then(function(t){ throw {status:r.status, body:t.slice(0,150)}; }); }
+      saveStatus = 'saved';
+      saveErrorDetail = '';
+      clearDraft();
+      updateIndicator();
+    }).catch(function(err){
+      if(err && err.authFailed){
+        syncKey = null;
+        try{ localStorage.removeItem('syncKey'); }catch(e){}
+        modalOpen = true;
+        modalStage = 'token';
+        modalErrorMsg = 'Chave incorreta — cole a chave certa';
+      }
+      if(err && err.status){
+        saveErrorDetail = 'HTTP ' + err.status + (err.body ? ': ' + err.body : '');
+      } else {
+        saveErrorDetail = (err && err.message) || 'erro de rede';
+      }
+      saveStatus = 'error';
+      updateIndicator();
+      render();
+    });
+  }
+
+  function boot(){
+    var draftDirty = false;
+    var draft = null;
+    try{
+      draftDirty = sessionStorage.getItem('draftDirty') === '1';
+      if(draftDirty){ draft = JSON.parse(sessionStorage.getItem('draftState')); }
+    }catch(e){ draftDirty = false; draft = null; }
+
+    if(unlocked && draftDirty && draft){
+      state = draft;
+      loaded = true;
+      render();
+      saveNow();
+      return;
+    }
+
+    fetch('/api/state', {cache:'no-store'}).then(function(r){
+      if(!r.ok){ throw new Error('missing'); }
+      return r.json();
+    }).then(function(data){
+      state = data;
+    }).catch(function(){
+      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }).then(function(){
+      loaded = true;
+      render();
+    });
+  }
+
+  render();
+  boot();
+})();
+</script>
+</body>
+</html>
