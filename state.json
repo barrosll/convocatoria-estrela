@@ -1,1 +1,22 @@
-{"test":"direct-put-diagnostic"}
+{
+  "local": "Samora Correia ",
+  "adversario": "Samora Correia ",
+  "data": "26/09/2026",
+  "horario": "11:00",
+  "staff": "Bento  961842363 / Hélder  919228079",
+  "players": [
+    { "id": "p2", "name": "Rafa", "call": true },
+    { "id": "phd0y8ey", "name": "Filipe", "call": true },
+    { "id": "p95cgc2t", "name": "Lorenzo", "call": true },
+    { "id": "pxm9pdk5", "name": "Manu", "call": true },
+    { "id": "pqz07e10", "name": "Clarisse", "call": true },
+    { "id": "pcxai0a4", "name": "Gustavo", "call": true },
+    { "id": "pycg4mn5", "name": "Henrique", "call": true },
+    { "id": "pzergwv7", "name": "Santi A", "call": true },
+    { "id": "pf7ueb3o", "name": "Gabriel", "call": true },
+    { "id": "p7ymhdu6", "name": "João", "call": true },
+    { "id": "pdhzthhp", "name": "Bernardo", "call": true },
+    { "id": "pbg0m29a", "name": "Santiago", "call": true },
+    { "id": "pgwybro9", "name": "André", "call": true }
+  ]
+}
