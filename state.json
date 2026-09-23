@@ -6,11 +6,6 @@
   "staff": "",
   "players": [
     {
-      "id": "p1",
-      "name": "Felipe",
-      "call": true
-    },
-    {
       "id": "p2",
       "name": "Rafa",
       "call": true
