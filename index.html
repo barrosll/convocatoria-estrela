@@ -39,7 +39,7 @@ a{color:inherit;}
 
 .section-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);margin:0 0 12px;border-bottom:2px solid var(--yellow);padding-bottom:8px;}
 
-.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
 @media (max-width:480px){.card-grid{grid-template-columns:1fr;}}
 .card{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:clamp(20px,2.4vw,30px);text-decoration:none;transition:border-color .15s ease,transform .15s ease;}
 .card:hover{transform:translateY(-2px);}
@@ -101,6 +101,17 @@ a{color:inherit;}
         <h3 class="card-title">Loja do clube</h3>
         <p class="card-sub">Já garantiu o seu equipamento?</p>
         <span class="card-cta">Visitar loja
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+        </span>
+      </a>
+
+      <a class="card" href="sorteio-benjamins.pdf" target="_blank" rel="noopener">
+        <span class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M7 6H4a2 2 0 0 0 2 4"></path><path d="M17 6h3a2 2 0 0 1-2 4"></path></svg>
+        </span>
+        <h3 class="card-title">Sorteio Torneio Benjamins Sub-10</h3>
+        <p class="card-sub">PD Benjamins 1º Ano Sub-10 · Futebol 7 · Série D</p>
+        <span class="card-cta">Ver sorteio (PDF)
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
         </span>
       </a>
