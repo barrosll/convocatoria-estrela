@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
@@ -33,6 +33,12 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
 .save-indicator.saving{color:var(--yellow);background:rgba(244,198,12,.12);}
 .save-indicator.error{color:var(--danger);background:rgba(229,72,77,.12);}
 .save-indicator.local{color:var(--muted);background:rgba(255,255,255,.05);}
+.save-indicator.pending{color:var(--yellow);background:rgba(244,198,12,.12);}
+
+.publish-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;}
+.publish-btn{background:var(--yellow);color:var(--bg);border:none;border-radius:10px;padding:10px 18px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
+.publish-btn:hover{background:var(--yellow-deep);}
+.publish-btn:disabled{opacity:.5;cursor:default;}
 
 .header{display:flex;align-items:center;gap:14px;}
 .crest{flex:0 0 auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}
@@ -163,6 +169,9 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
   var modalErrorMsg = '';
   var saveErrorDetail = '';
 
+  var publishStatus = 'unknown';
+  var publishErrorDetail = '';
+
   function uid(){ return 'p' + Math.random().toString(36).slice(2,9); }
   function pad(n){ return n<10 ? '0'+n : ''+n; }
   function attr(str){
@@ -197,6 +206,8 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
   }
 
   function persistDraft(){
+    publishStatus = 'pending';
+    updatePublishIndicator();
     try{
       sessionStorage.setItem('draftState', JSON.stringify(state));
       sessionStorage.setItem('draftDirty', '1');
@@ -234,11 +245,26 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     return 'local';
   }
   function statusText(){
-    if(saveStatus==='saving') return 'A guardar…';
-    if(saveStatus==='saved') return 'Guardado';
+    if(saveStatus==='saving') return 'A guardar rascunho…';
+    if(saveStatus==='saved') return 'Rascunho guardado';
     if(saveStatus==='error') return 'Falha ao guardar' + (saveErrorDetail ? ' (' + saveErrorDetail + ')' : '');
     if(saveStatus==='local') return 'Sem chave de sincronização';
     return 'Pronto para editar';
+  }
+
+  function publishStatusClass(){
+    if(publishStatus==='publishing') return 'saving';
+    if(publishStatus==='published') return 'saved';
+    if(publishStatus==='error') return 'error';
+    if(publishStatus==='pending') return 'pending';
+    return 'local';
+  }
+  function publishStatusText(){
+    if(publishStatus==='publishing') return 'A publicar…';
+    if(publishStatus==='published') return 'Publicado — visível para os pais';
+    if(publishStatus==='error') return 'Falha ao publicar' + (publishErrorDetail ? ' (' + publishErrorDetail + ')' : '');
+    if(publishStatus==='pending') return 'Alterações por publicar';
+    return 'A verificar…';
   }
 
   function field(key,label,placeholder,inputmode){
@@ -331,6 +357,10 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
         + '<span id="save-indicator" class="save-indicator ' + statusClass() + '">' + statusText() + '</span>'
         + '<button type="button" class="lock-btn" id="lock-btn">Bloquear</button>'
       + '</div>'
+      + '<div class="publish-bar no-print">'
+        + '<span id="publish-indicator" class="save-indicator ' + publishStatusClass() + '">' + publishStatusText() + '</span>'
+        + '<button type="button" class="publish-btn" id="publish-btn"' + (publishStatus==='publishing'?' disabled':'') + '>Publicar alterações</button>'
+      + '</div>'
       + '<div class="staff-link-row no-print"><button type="button" class="staff-link" id="reset-token-link">Trocar chave de sincronização</button></div>'
       + headerHTML('Toque nos campos para editar · marque quem vai a jogo')
       + '<div class="info-grid">'
@@ -360,7 +390,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
       + '</div>'
       + bannerHTML()
       + '<button type="button" class="print-btn no-print" id="print-btn">Imprimir / Partilhar</button>'
-      + '<p class="hint no-print">As alterações ficam guardadas automaticamente, visíveis para todos em segundos.</p>';
+      + '<p class="hint no-print">As alterações ficam guardadas automaticamente como rascunho. Toque em "Publicar alterações" para ficarem visíveis para os pais.</p>';
   }
 
   function readBody(){
@@ -487,6 +517,9 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     var printBtn = root.querySelector('#print-btn');
     if(printBtn){ printBtn.addEventListener('click', function(){ window.print(); }); }
 
+    var publishBtn = root.querySelector('#publish-btn');
+    if(publishBtn){ publishBtn.addEventListener('click', function(){ publishNow(); }); }
+
     var lockBtn = root.querySelector('#lock-btn');
     if(lockBtn){ lockBtn.addEventListener('click', function(){
       unlocked = false;
@@ -554,12 +587,13 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
         modalErrorMsg = '';
         if(syncKey){
           modalOpen = false;
+          loadDraftAndCompare();
         } else {
           modalStage = 'token';
+          render();
+          var tokenInput = root.querySelector('#token-input');
+          if(tokenInput){ tokenInput.focus(); }
         }
-        render();
-        var tokenInput = root.querySelector('#token-input');
-        if(tokenInput){ tokenInput.focus(); }
       } else {
         modalErrorMsg = 'Código incorreto';
         render();
@@ -582,8 +616,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     modalOpen = false;
     modalStage = 'pin';
     modalErrorMsg = '';
-    render();
-    saveNow();
+    loadDraftAndCompare();
   }
 
   function render(){
@@ -596,6 +629,13 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     if(!el){ return; }
     el.className = 'save-indicator ' + statusClass();
     el.textContent = statusText();
+  }
+
+  function updatePublishIndicator(){
+    var el = document.getElementById('publish-indicator');
+    if(!el){ return; }
+    el.className = 'save-indicator ' + publishStatusClass();
+    el.textContent = publishStatusText();
   }
 
   function scheduleSave(){
@@ -623,7 +663,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     saveStatus = 'saving';
     updateIndicator();
 
-    return fetch('/api/state', {
+    return fetch('/api/draft', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -655,19 +695,98 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     });
   }
 
+  function publishNow(){
+    if(!syncKey){
+      modalOpen = true;
+      modalStage = 'token';
+      modalErrorMsg = '';
+      render();
+      return;
+    }
+    publishStatus = 'publishing';
+    render();
+    fetch('/api/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ syncKey: syncKey })
+    }).then(function(r){
+      if(r.status === 401){ throw {authFailed:true, status:401}; }
+      if(!r.ok){ return r.text().then(function(t){ throw {status:r.status, body:t.slice(0,150)}; }); }
+      return r.json();
+    }).then(function(data){
+      publishStatus = 'published';
+      publishErrorDetail = '';
+      render();
+    }).catch(function(err){
+      if(err && err.authFailed){
+        syncKey = null;
+        try{ localStorage.removeItem('syncKey'); }catch(e){}
+        modalOpen = true;
+        modalStage = 'token';
+        modalErrorMsg = 'Chave incorreta — cole a chave certa';
+      }
+      if(err && err.status){
+        publishErrorDetail = 'HTTP ' + err.status + (err.body ? ': ' + err.body : '');
+      } else {
+        publishErrorDetail = (err && err.message) || 'erro de rede';
+      }
+      publishStatus = 'error';
+      render();
+    });
+  }
+
+  function loadDraftAndCompare(){
+    loaded = false;
+    render();
+    return Promise.all([
+      fetch('/api/draft?syncKey=' + encodeURIComponent(syncKey), {cache:'no-store'}).then(function(r){
+        if(r.status === 401){ throw {authFailed:true}; }
+        if(!r.ok){ throw new Error('draft_fail'); }
+        return r.json();
+      }),
+      fetch('/api/state', {cache:'no-store'}).then(function(r){
+        if(!r.ok){ throw new Error('state_fail'); }
+        return r.json();
+      })
+    ]).then(function(results){
+      state = results[0];
+      publishStatus = (JSON.stringify(results[0]) === JSON.stringify(results[1])) ? 'published' : 'pending';
+    }).catch(function(err){
+      if(err && err.authFailed){
+        syncKey = null;
+        try{ localStorage.removeItem('syncKey'); }catch(e){}
+      }
+      return fetch('/api/state', {cache:'no-store'}).then(function(r){
+        return r.ok ? r.json() : JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }).then(function(data){
+        state = data;
+        publishStatus = 'published';
+      });
+    }).then(function(){
+      loaded = true;
+      render();
+    });
+  }
+
   function boot(){
     var draftDirty = false;
-    var draft = null;
+    var localDraft = null;
     try{
       draftDirty = sessionStorage.getItem('draftDirty') === '1';
-      if(draftDirty){ draft = JSON.parse(sessionStorage.getItem('draftState')); }
-    }catch(e){ draftDirty = false; draft = null; }
+      if(draftDirty){ localDraft = JSON.parse(sessionStorage.getItem('draftState')); }
+    }catch(e){ draftDirty = false; localDraft = null; }
 
-    if(unlocked && draftDirty && draft){
-      state = draft;
+    if(unlocked && draftDirty && localDraft){
+      state = localDraft;
+      publishStatus = 'pending';
       loaded = true;
       render();
       saveNow();
+      return;
+    }
+
+    if(unlocked && syncKey){
+      loadDraftAndCompare();
       return;
     }
 
@@ -679,6 +798,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     }).catch(function(){
       state = JSON.parse(JSON.stringify(DEFAULT_STATE));
     }).then(function(){
+      publishStatus = 'published';
       loaded = true;
       render();
     });
@@ -690,3 +810,4 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
 </script>
 </body>
 </html>
+
