@@ -1,4 +1,4 @@
-import { DEFAULT_STATE, json, corsHeaders, githubConfig, getFile, putFileWithRetry, checkSyncKey } from "./_lib.mjs";
+import { json, corsHeaders, githubConfig, getFile, putFileWithRetry, checkSyncKey, normalizeGamesFile, defaultGamesFile, gameKeyOrDefault } from "./_lib.mjs";
 
 export default async (req) => {
   if (req.method === "OPTIONS") {
@@ -10,13 +10,17 @@ export default async (req) => {
   if (req.method === "GET") {
     const url = new URL(req.url);
     const syncKey = url.searchParams.get("syncKey") || "";
+    const game = gameKeyOrDefault(url.searchParams.get("game"));
     if (!checkSyncKey(syncKey)) {
       return json({ error: "unauthorized" }, 401);
     }
-    const draft = await getFile(cfg, "draft.json");
-    if (draft) return json(draft.content);
+    const draftFile = await getFile(cfg, "draft.json");
+    if (draftFile && draftFile.content && draftFile.content.games && draftFile.content.games[game]) {
+      return json(normalizeGamesFile(draftFile.content).games[game]);
+    }
     const published = await getFile(cfg, "state.json");
-    return json(published ? published.content : DEFAULT_STATE);
+    const games = published ? normalizeGamesFile(published.content) : defaultGamesFile();
+    return json(games.games[game]);
   }
 
   if (req.method === "PUT") {
@@ -27,11 +31,16 @@ export default async (req) => {
       return json({ error: "invalid_json" }, 400);
     }
     const syncKey = (body && body.syncKey) || "";
+    const game = gameKeyOrDefault(body && body.game);
     if (!checkSyncKey(syncKey)) {
       return json({ error: "unauthorized" }, 401);
     }
 
-    const r = await putFileWithRetry(cfg, "draft.json", body.state, "Atualiza rascunho da convocatória");
+    const existing = await getFile(cfg, "draft.json");
+    const games = existing ? normalizeGamesFile(existing.content) : defaultGamesFile();
+    games.games[game] = body.state;
+
+    const r = await putFileWithRetry(cfg, "draft.json", games, "Atualiza rascunho da convocatoria (" + game + ")");
     if (!r.ok) {
       const text = await r.text();
       return json({ error: "github_error", status: r.status, detail: text.slice(0, 200) }, 502);

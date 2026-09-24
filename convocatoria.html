@@ -1,4 +1,4 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
@@ -39,6 +39,10 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
 .publish-btn{background:var(--yellow);color:var(--bg);border:none;border-radius:10px;padding:10px 18px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
 .publish-btn:hover{background:var(--yellow-deep);}
 .publish-btn:disabled{opacity:.5;cursor:default;}
+
+.game-tabs{display:flex;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;}
+.game-tab{flex:1;border:none;border-radius:9px;padding:10px 0;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--muted);}
+.game-tab.active{background:var(--yellow);color:var(--bg);}
 
 .header{display:flex;align-items:center;gap:14px;}
 .crest{flex:0 0 auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}
@@ -135,6 +139,14 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
   var syncKey = null;
   try{ syncKey = localStorage.getItem('syncKey') || null; }catch(e){ syncKey = null; }
 
+  var GAMES = { sabado: {key:'sabado', label:'Sábado'}, domingo: {key:'domingo', label:'Domingo'} };
+  var GAME_ORDER = ['sabado','domingo'];
+  var activeGame = 'sabado';
+  try{
+    var storedGame = sessionStorage.getItem('activeGame');
+    if(storedGame && GAMES[storedGame]){ activeGame = storedGame; }
+  }catch(e){}
+
   var DEFAULT_STATE = {
     local: '', adversario: '', data: '', horario: '', staff: '',
     players: [
@@ -209,14 +221,14 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     publishStatus = 'pending';
     updatePublishIndicator();
     try{
-      sessionStorage.setItem('draftState', JSON.stringify(state));
-      sessionStorage.setItem('draftDirty', '1');
+      sessionStorage.setItem('draftState_' + activeGame, JSON.stringify(state));
+      sessionStorage.setItem('draftDirty_' + activeGame, '1');
     }catch(e){}
   }
   function clearDraft(){
     try{
-      sessionStorage.removeItem('draftState');
-      sessionStorage.removeItem('draftDirty');
+      sessionStorage.removeItem('draftState_' + activeGame);
+      sessionStorage.removeItem('draftDirty_' + activeGame);
     }catch(e){}
   }
 
@@ -295,6 +307,14 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     + '</div>';
   }
 
+  function gameTabsHTML(){
+    var tabs = GAME_ORDER.map(function(key){
+      var active = key === activeGame;
+      return '<button type="button" class="game-tab' + (active?' active':'') + '" data-game="' + key + '">' + GAMES[key].label + '</button>';
+    }).join('');
+    return '<div class="game-tabs no-print">' + tabs + '</div>';
+  }
+
   function bannerHTML(){
     return '<div class="banner">'
       + '<p class="banner-tag">Um por todos, todos por um</p>'
@@ -352,6 +372,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     }).join('');
 
     return ''
+      + gameTabsHTML()
       + '<div class="top-bar no-print">'
         + '<span class="edit-badge">Modo edição</span>'
         + '<span id="save-indicator" class="save-indicator ' + statusClass() + '">' + statusText() + '</span>'
@@ -419,6 +440,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     }
 
     return ''
+      + gameTabsHTML()
       + headerHTML('Verifique se o seu educando foi convocado para este jogo')
       + '<div class="info-grid">'
         + readField('Local do jogo', state.local, 'A confirmar')
@@ -449,6 +471,12 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
   }
 
   function attachEvents(){
+    root.querySelectorAll('.game-tab[data-game]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var g = btn.dataset.game;
+        if(g !== activeGame){ switchGame(g); }
+      });
+    });
     root.querySelectorAll('.field-input[data-field]').forEach(function(inp){
       var key = inp.dataset.field;
       if(key === 'data'){
@@ -668,7 +696,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ syncKey: syncKey, state: state })
+      body: JSON.stringify({ syncKey: syncKey, game: activeGame, state: state })
     }).then(function(r){
       if(r.status === 401){ throw {authFailed:true, status:401}; }
       if(!r.ok){ return r.text().then(function(t){ throw {status:r.status, body:t.slice(0,150)}; }); }
@@ -708,7 +736,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     fetch('/api/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ syncKey: syncKey })
+      body: JSON.stringify({ syncKey: syncKey, game: activeGame })
     }).then(function(r){
       if(r.status === 401){ throw {authFailed:true, status:401}; }
       if(!r.ok){ return r.text().then(function(t){ throw {status:r.status, body:t.slice(0,150)}; }); }
@@ -738,13 +766,14 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
   function loadDraftAndCompare(){
     loaded = false;
     render();
+    var gameParam = encodeURIComponent(activeGame);
     return Promise.all([
-      fetch('/api/draft?syncKey=' + encodeURIComponent(syncKey), {cache:'no-store'}).then(function(r){
+      fetch('/api/draft?syncKey=' + encodeURIComponent(syncKey) + '&game=' + gameParam, {cache:'no-store'}).then(function(r){
         if(r.status === 401){ throw {authFailed:true}; }
         if(!r.ok){ throw new Error('draft_fail'); }
         return r.json();
       }),
-      fetch('/api/state', {cache:'no-store'}).then(function(r){
+      fetch('/api/state?game=' + gameParam, {cache:'no-store'}).then(function(r){
         if(!r.ok){ throw new Error('state_fail'); }
         return r.json();
       })
@@ -756,7 +785,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
         syncKey = null;
         try{ localStorage.removeItem('syncKey'); }catch(e){}
       }
-      return fetch('/api/state', {cache:'no-store'}).then(function(r){
+      return fetch('/api/state?game=' + gameParam, {cache:'no-store'}).then(function(r){
         return r.ok ? r.json() : JSON.parse(JSON.stringify(DEFAULT_STATE));
       }).then(function(data){
         state = data;
@@ -768,12 +797,48 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
     });
   }
 
+  function switchGame(newGame){
+    if(!GAMES[newGame] || newGame === activeGame){ return; }
+    clearTimeout(saveTimer);
+    var needsFlush = unlocked && syncKey && saveStatus === 'saving';
+    var flush = needsFlush ? saveChain.then(function(){ return performSave(); }) : Promise.resolve();
+    if(needsFlush){ saveChain = flush; }
+    flush.then(function(){
+      activeGame = newGame;
+      try{ sessionStorage.setItem('activeGame', activeGame); }catch(e){}
+      saveStatus = 'idle';
+      saveErrorDetail = '';
+      publishErrorDetail = '';
+      modalOpen = false;
+
+      if(unlocked && syncKey){
+        loadDraftAndCompare();
+        return;
+      }
+
+      loaded = false;
+      render();
+      fetch('/api/state?game=' + encodeURIComponent(activeGame), {cache:'no-store'}).then(function(r){
+        if(!r.ok){ throw new Error('missing'); }
+        return r.json();
+      }).then(function(data){
+        state = data;
+      }).catch(function(){
+        state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }).then(function(){
+        publishStatus = 'published';
+        loaded = true;
+        render();
+      });
+    });
+  }
+
   function boot(){
     var draftDirty = false;
     var localDraft = null;
     try{
-      draftDirty = sessionStorage.getItem('draftDirty') === '1';
-      if(draftDirty){ localDraft = JSON.parse(sessionStorage.getItem('draftState')); }
+      draftDirty = sessionStorage.getItem('draftDirty_' + activeGame) === '1';
+      if(draftDirty){ localDraft = JSON.parse(sessionStorage.getItem('draftState_' + activeGame)); }
     }catch(e){ draftDirty = false; localDraft = null; }
 
     if(unlocked && draftDirty && localDraft){
@@ -790,7 +855,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
       return;
     }
 
-    fetch('/api/state', {cache:'no-store'}).then(function(r){
+    fetch('/api/state?game=' + encodeURIComponent(activeGame), {cache:'no-store'}).then(function(r){
       if(!r.ok){ throw new Error('missing'); }
       return r.json();
     }).then(function(data){
@@ -810,4 +875,5 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
 </script>
 </body>
 </html>
+
 

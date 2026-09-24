@@ -1,4 +1,4 @@
-import { DEFAULT_STATE, json, corsHeaders, githubConfig, getFile, putFileWithRetry, checkSyncKey } from "./_lib.mjs";
+import { json, corsHeaders, githubConfig, getFile, putFileWithRetry, checkSyncKey, normalizeGamesFile, defaultGamesFile, gameKeyOrDefault } from "./_lib.mjs";
 
 export default async (req) => {
   if (req.method === "OPTIONS") {
@@ -15,20 +15,26 @@ export default async (req) => {
     return json({ error: "invalid_json" }, 400);
   }
   const syncKey = (body && body.syncKey) || "";
+  const game = gameKeyOrDefault(body && body.game);
   if (!checkSyncKey(syncKey)) {
     return json({ error: "unauthorized" }, 401);
   }
 
   const cfg = githubConfig();
-  const draft = await getFile(cfg, "draft.json");
-  const contentToPublish = draft ? draft.content : (body && body.state) || DEFAULT_STATE;
+  const draftFile = await getFile(cfg, "draft.json");
+  const draftGames = draftFile ? normalizeGamesFile(draftFile.content) : null;
+  const contentToPublish = draftGames ? draftGames.games[game] : null;
 
-  const r = await putFileWithRetry(cfg, "state.json", contentToPublish, "Publica convocatória");
+  const existingState = await getFile(cfg, "state.json");
+  const stateGames = existingState ? normalizeGamesFile(existingState.content) : defaultGamesFile();
+  stateGames.games[game] = contentToPublish || stateGames.games[game];
+
+  const r = await putFileWithRetry(cfg, "state.json", stateGames, "Publica convocatoria (" + game + ")");
   if (!r.ok) {
     const text = await r.text();
     return json({ error: "github_error", status: r.status, detail: text.slice(0, 200) }, 502);
   }
-  return json({ ok: true, published: contentToPublish });
+  return json({ ok: true, published: stateGames.games[game] });
 };
 
 export const config = { path: "/api/publish" };

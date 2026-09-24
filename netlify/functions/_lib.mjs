@@ -1,23 +1,44 @@
-export const DEFAULT_STATE = {
-  local: "", adversario: "", data: "", horario: "", staff: "",
-  players: [
-    { id: "p1", name: "Felipe", call: true },
-    { id: "p2", name: "Rafa", call: true },
-    { id: "p3", name: "Manu", call: true },
-    { id: "p4", name: "Lorenzo", call: true },
-    { id: "p5", name: "Gustavo", call: true },
-    { id: "p6", name: "Santiago A", call: true },
-    { id: "p7", name: "Santiago", call: true },
-    { id: "p8", name: "Tiago", call: true },
-    { id: "p9", name: "Leo", call: true },
-    { id: "p10", name: "Gabriel", call: true },
-    { id: "p11", name: "João Vítor", call: true },
-    { id: "p12", name: "André", call: true },
-    { id: "p13", name: "Clarisse", call: true },
-    { id: "p14", name: "Bernardo", call: true },
-    { id: "p15", name: "Ferreira", call: true }
-  ]
-};
+export const GAME_KEYS = ["sabado", "domingo"];
+
+export function defaultGame() {
+  return {
+    local: "", adversario: "", data: "", horario: "", staff: "",
+    players: [
+      { id: "p1", name: "Felipe", call: true },
+      { id: "p2", name: "Rafa", call: true },
+      { id: "p3", name: "Manu", call: true },
+      { id: "p4", name: "Lorenzo", call: true },
+      { id: "p5", name: "Gustavo", call: true },
+      { id: "p6", name: "Santiago A", call: true },
+      { id: "p7", name: "Santiago", call: true },
+      { id: "p8", name: "Tiago", call: true },
+      { id: "p9", name: "Leo", call: true },
+      { id: "p10", name: "Gabriel", call: true },
+      { id: "p11", name: "João Vítor", call: true },
+      { id: "p12", name: "André", call: true },
+      { id: "p13", name: "Clarisse", call: true },
+      { id: "p14", name: "Bernardo", call: true },
+      { id: "p15", name: "Ferreira", call: true }
+    ]
+  };
+}
+
+export function defaultGamesFile() {
+  const games = {};
+  GAME_KEYS.forEach((k) => { games[k] = defaultGame(); });
+  return { games };
+}
+
+export function normalizeGamesFile(obj) {
+  const games = (obj && obj.games) || {};
+  const out = {};
+  GAME_KEYS.forEach((k) => { out[k] = games[k] || defaultGame(); });
+  return { games: out };
+}
+
+export function gameKeyOrDefault(v) {
+  return GAME_KEYS.indexOf(v) !== -1 ? v : "sabado";
+}
 
 export const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
