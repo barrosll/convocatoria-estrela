@@ -148,7 +148,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
   }catch(e){}
 
   var DEFAULT_STATE = {
-    local: '', adversario: '', data: '', horario: '', staff: '',
+    local: '', adversario: '', data: '', horario: '', concentracao: '', staff: '',
     players: [
       {id:'p1', name:'Felipe', call:true},
       {id:'p2', name:'Rafa', call:true},
@@ -389,6 +389,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
         + field('adversario','Adversário','Nome da equipa adversária')
         + field('data','Data','DD/MM/AAAA','numeric')
         + field('horario','Horário do jogo','HH:MM','numeric')
+        + field('concentracao','Horário concentração','HH:MM','numeric')
         + '<div class="field full">'
           + '<label class="field-label" for="f-staff">Staff / Contacto</label>'
           + '<input id="f-staff" type="text" class="field-input" data-field="staff" value="' + attr(state.staff) + '" placeholder="Nome e contacto do responsável">'
@@ -447,6 +448,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
         + readField('Adversário', state.adversario, 'A confirmar')
         + readField('Data', state.data, 'A confirmar')
         + readField('Horário do jogo', state.horario, 'A confirmar')
+        + readField('Horário concentração', state.concentracao, 'A confirmar')
         + '<div class="field full">'
           + '<span class="field-label">Staff / Contacto</span>'
           + '<div class="field-value">' + (state.staff ? attr(state.staff) : '<span class="muted-val">A confirmar</span>') + '</div>'
@@ -485,9 +487,9 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
           persistDraft();
           scheduleSave();
         });
-      } else if(key === 'horario'){
+      } else if(key === 'horario' || key === 'concentracao'){
         inp.addEventListener('input', function(){
-          state.horario = applyMaskedInput(inp, formatTimeDigits);
+          state[key] = applyMaskedInput(inp, formatTimeDigits);
           persistDraft();
           scheduleSave();
         });
@@ -875,5 +877,6 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
 </script>
 </body>
 </html>
+
 
 
