@@ -4,5 +4,51 @@
   "staff": "Bento  961842363 / Hélder  919228079",
   "horario": "11:00",
   "local": "Samora Correia ",
-  "players": []
+  "players": [
+    {
+      "id": "pi75hxva",
+      "name": "Felipe",
+      "call": true
+    },
+    {
+      "id": "pzvfxf8p",
+      "name": "Lorenzo",
+      "call": true
+    },
+    {
+      "id": "p1w4yoxu",
+      "name": "Manuel",
+      "call": true
+    },
+    {
+      "id": "plisigzb",
+      "name": "Gustavo",
+      "call": true
+    },
+    {
+      "id": "p0lgbmfu",
+      "name": "Santiago A",
+      "call": true
+    },
+    {
+      "id": "pq7tlyt4",
+      "name": "Henrique",
+      "call": true
+    },
+    {
+      "id": "puo4a9lx",
+      "name": "João Vitor",
+      "call": true
+    },
+    {
+      "id": "pl5l2pz7",
+      "name": "Gabriel",
+      "call": true
+    },
+    {
+      "id": "pxy27vuk",
+      "name": "Andre",
+      "call": true
+    }
+  ]
 }
