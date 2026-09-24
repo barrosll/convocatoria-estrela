@@ -1,54 +1,172 @@
 {
-  "data": "26/09/2026",
-  "adversario": "Samora Correia ",
-  "staff": "Bento  961842363 / Hélder  919228079",
-  "horario": "11:00",
-  "local": "Samora Correia  (Concentração 10h15)",
-  "players": [
-    {
-      "id": "pi75hxva",
-      "name": "Felipe",
-      "call": true
+  "games": {
+    "sabado": {
+      "local": "",
+      "adversario": "",
+      "data": "",
+      "horario": "",
+      "staff": "",
+      "players": [
+        {
+          "id": "p1",
+          "name": "Felipe",
+          "call": true
+        },
+        {
+          "id": "p2",
+          "name": "Rafa",
+          "call": true
+        },
+        {
+          "id": "p3",
+          "name": "Manu",
+          "call": true
+        },
+        {
+          "id": "p4",
+          "name": "Lorenzo",
+          "call": true
+        },
+        {
+          "id": "p5",
+          "name": "Gustavo",
+          "call": true
+        },
+        {
+          "id": "p6",
+          "name": "Santiago A",
+          "call": true
+        },
+        {
+          "id": "p7",
+          "name": "Santiago",
+          "call": true
+        },
+        {
+          "id": "p8",
+          "name": "Tiago",
+          "call": true
+        },
+        {
+          "id": "p9",
+          "name": "Leo",
+          "call": true
+        },
+        {
+          "id": "p10",
+          "name": "Gabriel",
+          "call": true
+        },
+        {
+          "id": "p11",
+          "name": "João Vítor",
+          "call": true
+        },
+        {
+          "id": "p12",
+          "name": "André",
+          "call": true
+        },
+        {
+          "id": "p13",
+          "name": "Clarisse",
+          "call": true
+        },
+        {
+          "id": "p14",
+          "name": "Bernardo",
+          "call": true
+        },
+        {
+          "id": "p15",
+          "name": "Ferreira",
+          "call": true
+        }
+      ]
     },
-    {
-      "id": "pzvfxf8p",
-      "name": "Lorenzo",
-      "call": true
-    },
-    {
-      "id": "p1w4yoxu",
-      "name": "Manu",
-      "call": true
-    },
-    {
-      "id": "plisigzb",
-      "name": "Gustavo",
-      "call": true
-    },
-    {
-      "id": "p0lgbmfu",
-      "name": "Santiago A",
-      "call": true
-    },
-    {
-      "id": "pq7tlyt4",
-      "name": "Henrique",
-      "call": true
-    },
-    {
-      "id": "puo4a9lx",
-      "name": "João Vitor",
-      "call": true
-    },
-    {
-      "id": "pl5l2pz7",
-      "name": "Gabriel",
-      "call": true
-    },
-    {
-      "id": "pxy27vuk",
-      "name": "Andre",
-      "call": true
+    "domingo": {
+      "data": "",
+      "adversario": "Adversario Teste",
+      "staff": "",
+      "horario": "",
+      "local": "TESTE-DOMINGO-1958219660",
+      "players": [
+        {
+          "call": true,
+          "name": "Felipe",
+          "id": "p1"
+        },
+        {
+          "call": true,
+          "name": "Rafa",
+          "id": "p2"
+        },
+        {
+          "call": true,
+          "name": "Manu",
+          "id": "p3"
+        },
+        {
+          "call": true,
+          "name": "Lorenzo",
+          "id": "p4"
+        },
+        {
+          "call": true,
+          "name": "Gustavo",
+          "id": "p5"
+        },
+        {
+          "call": true,
+          "name": "Santiago A",
+          "id": "p6"
+        },
+        {
+          "call": true,
+          "name": "Santiago",
+          "id": "p7"
+        },
+        {
+          "call": true,
+          "name": "Tiago",
+          "id": "p8"
+        },
+        {
+          "call": true,
+          "name": "Leo",
+          "id": "p9"
+        },
+        {
+          "call": true,
+          "name": "Gabriel",
+          "id": "p10"
+        },
+        {
+          "call": true,
+          "name": "João Vítor",
+          "id": "p11"
+        },
+        {
+          "call": true,
+          "name": "André",
+          "id": "p12"
+        },
+        {
+          "call": true,
+          "name": "Clarisse",
+          "id": "p13"
+        },
+        {
+          "call": true,
+          "name": "Bernardo",
+          "id": "p14"
+        },
+        {
+          "call": true,
+          "name": "Ferreira",
+          "id": "p15"
+        }
+      ]
     }
-  ]
+  }
 }
