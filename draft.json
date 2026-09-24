@@ -4,11 +4,5 @@
   "staff": "Bento  961842363 / H�lder  919228079",
   "horario": "11:00",
   "local": "Samora Correia ",
-  "players": [
-    {
-      "call": true,
-      "name": "Filipe",
-      "id": "phd0y8ey"
-    }
-  ]
+  "players": []
 }
