@@ -66,11 +66,6 @@
           "id": "p12",
           "name": "André",
           "call": true
-        },
-        {
-          "id": "p13",
-          "name": "Clarisse",
-          "call": true
         }
       ],
       "concentracao": "10:15"
