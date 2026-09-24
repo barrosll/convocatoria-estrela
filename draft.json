@@ -82,7 +82,8 @@
           "name": "Ferreira",
           "call": true
         }
-      ]
+      ],
+      "concentracao": "10:15"
     },
     "domingo": {
       "data": "27/09/2026",
