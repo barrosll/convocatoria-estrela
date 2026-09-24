@@ -90,38 +90,7 @@
       "staff": "",
       "horario": "",
       "local": "",
-      "players": [
-        {
-          "call": true,
-          "name": "Lorenzo",
-          "id": "p4"
-        },
-        {
-          "call": true,
-          "name": "Santiago A",
-          "id": "p6"
-        },
-        {
-          "call": true,
-          "name": "Tiago",
-          "id": "p8"
-        },
-        {
-          "call": true,
-          "name": "Gabriel",
-          "id": "p10"
-        },
-        {
-          "call": true,
-          "name": "Andr�",
-          "id": "p12"
-        },
-        {
-          "call": true,
-          "name": "Bernardo",
-          "id": "p14"
-        }
-      ]
+      "players": []
     }
   }
 }
