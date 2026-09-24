@@ -56,12 +56,79 @@
       "concentracao": "10:15"
     },
     "domingo": {
-      "data": "",
-      "adversario": "",
-      "staff": "",
-      "horario": "",
-      "local": "",
-      "players": []
+      "data": "27/09/2026",
+      "adversario": "Fabril ",
+      "staff": "Bento  961842363  /  Hélder  919228079",
+      "horario": "10:00",
+      "local": "Fabril ",
+      "players": [
+        {
+          "id": "pzjuhjof",
+          "name": "Filipe",
+          "call": true
+        },
+        {
+          "id": "pkw78ala",
+          "name": "Rafael",
+          "call": true
+        },
+        {
+          "id": "pu5cwtji",
+          "name": "Lorenzo",
+          "call": true
+        },
+        {
+          "id": "puu4cw2b",
+          "name": "Manu",
+          "call": true
+        },
+        {
+          "id": "pnlxrcdq",
+          "name": "Clarisse",
+          "call": true
+        },
+        {
+          "id": "p15zxdde",
+          "name": "Bernardo",
+          "call": true
+        },
+        {
+          "id": "pfd899nb",
+          "name": "Santiago A",
+          "call": true
+        },
+        {
+          "id": "p8tm0gwl",
+          "name": "Santiago",
+          "call": true
+        },
+        {
+          "id": "pu0b44rm",
+          "name": "João",
+          "call": true
+        },
+        {
+          "id": "pm1kv278",
+          "name": "Henrique",
+          "call": true
+        },
+        {
+          "id": "pppoduwp",
+          "name": "Gabriel",
+          "call": true
+        },
+        {
+          "id": "pf7yhwu1",
+          "name": "Gustavo",
+          "call": true
+        },
+        {
+          "id": "pf0008em",
+          "name": "André",
+          "call": true
+        }
+      ],
+      "concentracao": "09:20"
     }
   }
 }
