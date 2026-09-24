@@ -7,11 +7,6 @@
   "players": [
     {
       "call": true,
-      "name": "Rafa",
-      "id": "p2"
-    },
-    {
-      "call": true,
       "name": "Filipe",
       "id": "phd0y8ey"
     }
