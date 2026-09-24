@@ -93,21 +93,6 @@
       "players": [
         {
           "call": true,
-          "name": "Felipe",
-          "id": "p1"
-        },
-        {
-          "call": true,
-          "name": "Rafa",
-          "id": "p2"
-        },
-        {
-          "call": true,
-          "name": "Manu",
-          "id": "p3"
-        },
-        {
-          "call": true,
           "name": "Lorenzo",
           "id": "p4"
         },
