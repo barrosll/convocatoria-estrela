@@ -4,5 +4,11 @@
   "staff": "Bento  961842363 / Hélder  919228079",
   "horario": "11:00",
   "local": "Samora Correia ",
-  "players": []
+  "players": [
+    {
+      "id": "ppteezo8",
+      "name": "Lll",
+      "call": true
+    }
+  ]
 }
