@@ -1,54 +1,142 @@
 {
-  "data": "26/09/2026",
-  "adversario": "Samora Correia ",
-  "staff": "Bento  961842363 / Hélder  919228079",
-  "horario": "11:00",
-  "local": "Samora Correia ",
-  "players": [
-    {
-      "id": "pi75hxva",
-      "name": "Felipe",
-      "call": true
-    },
-    {
-      "id": "pzvfxf8p",
-      "name": "Lorenzo",
-      "call": true
-    },
-    {
-      "id": "p1w4yoxu",
-      "name": "Manu",
-      "call": true
-    },
-    {
-      "id": "plisigzb",
-      "name": "Gustavo",
-      "call": true
-    },
-    {
-      "id": "p0lgbmfu",
-      "name": "Santiago A",
-      "call": true
-    },
-    {
-      "id": "pq7tlyt4",
-      "name": "Henrique",
-      "call": true
-    },
-    {
-      "id": "puo4a9lx",
-      "name": "João Vitor",
-      "call": true
-    },
-    {
-      "id": "pl5l2pz7",
-      "name": "Gabriel",
-      "call": true
-    },
-    {
-      "id": "pxy27vuk",
-      "name": "Andre",
-      "call": true
-    }
-  ]
+    "games":  {
+                  "sabado":  {
+                                 "data":  "26/09/2026",
+                                 "adversario":  "Samora Correia ",
+                                 "staff":  "Bento  961842363 / Hélder  919228079",
+                                 "horario":  "11:00",
+                                 "local":  "Samora Correia ",
+                                 "players":  [
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Felipe",
+                                                     "id":  "pi75hxva"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Lorenzo",
+                                                     "id":  "pzvfxf8p"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Manu",
+                                                     "id":  "p1w4yoxu"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Gustavo",
+                                                     "id":  "plisigzb"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Santiago A",
+                                                     "id":  "p0lgbmfu"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Henrique",
+                                                     "id":  "pq7tlyt4"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "João Vitor",
+                                                     "id":  "puo4a9lx"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Gabriel",
+                                                     "id":  "pl5l2pz7"
+                                                 },
+                                                 {
+                                                     "call":  true,
+                                                     "name":  "Andre",
+                                                     "id":  "pxy27vuk"
+                                                 }
+                                             ]
+                             },
+                  "domingo":  {
+                                  "data":  "",
+                                  "adversario":  "",
+                                  "staff":  "",
+                                  "horario":  "",
+                                  "local":  "",
+                                  "players":  [
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Felipe",
+                                                      "id":  "p1"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Rafa",
+                                                      "id":  "p2"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Manu",
+                                                      "id":  "p3"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Lorenzo",
+                                                      "id":  "p4"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Gustavo",
+                                                      "id":  "p5"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Santiago A",
+                                                      "id":  "p6"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Santiago",
+                                                      "id":  "p7"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Tiago",
+                                                      "id":  "p8"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Leo",
+                                                      "id":  "p9"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Gabriel",
+                                                      "id":  "p10"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "João Vítor",
+                                                      "id":  "p11"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "André",
+                                                      "id":  "p12"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Clarisse",
+                                                      "id":  "p13"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Bernardo",
+                                                      "id":  "p14"
+                                                  },
+                                                  {
+                                                      "call":  true,
+                                                      "name":  "Ferreira",
+                                                      "id":  "p15"
+                                                  }
+                                              ]
+                              }
+              }
 }
