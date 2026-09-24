@@ -56,10 +56,10 @@
     },
     "domingo": {
       "data": "",
-      "adversario": "Adversario Teste",
+      "adversario": "",
       "staff": "",
       "horario": "",
-      "local": "TESTE-DOMINGO-1958219660",
+      "local": "",
       "players": [
         {
           "call": true,
@@ -113,12 +113,12 @@
         },
         {
           "call": true,
-          "name": "João Vítor",
+          "name": "Jo�o V�tor",
           "id": "p11"
         },
         {
           "call": true,
-          "name": "André",
+          "name": "Andr�",
           "id": "p12"
         },
         {
