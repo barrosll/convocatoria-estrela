@@ -1,9 +1,9 @@
 {
   "data": "26/09/2026",
   "adversario": "Samora Correia ",
-  "staff": "Bento  961842363 / Hélder  919228079",
+  "staff": "Bento  961842363 / H�lder  919228079",
   "horario": "11:00",
-  "local": "TESTE-RASCUNHO-1133044256",
+  "local": "Samora Correia ",
   "players": [
     {
       "call": true,
@@ -52,7 +52,7 @@
     },
     {
       "call": true,
-      "name": "Joao",
+      "name": "Jo�o",
       "id": "p7ymhdu6"
     },
     {
@@ -67,7 +67,7 @@
     },
     {
       "call": true,
-      "name": "André",
+      "name": "Andr�",
       "id": "pgwybro9"
     }
   ]
