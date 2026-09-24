@@ -1,0 +1,74 @@
+{
+  "data": "26/09/2026",
+  "adversario": "Samora Correia ",
+  "staff": "Bento  961842363 / Hélder  919228079",
+  "horario": "11:00",
+  "local": "TESTE-RASCUNHO-1133044256",
+  "players": [
+    {
+      "call": true,
+      "name": "Rafa",
+      "id": "p2"
+    },
+    {
+      "call": true,
+      "name": "Filipe",
+      "id": "phd0y8ey"
+    },
+    {
+      "call": true,
+      "name": "Lorenzo",
+      "id": "p95cgc2t"
+    },
+    {
+      "call": true,
+      "name": "Manu",
+      "id": "pxm9pdk5"
+    },
+    {
+      "call": true,
+      "name": "Clarisse",
+      "id": "pqz07e10"
+    },
+    {
+      "call": true,
+      "name": "Gustavo",
+      "id": "pcxai0a4"
+    },
+    {
+      "call": true,
+      "name": "Henrique",
+      "id": "pycg4mn5"
+    },
+    {
+      "call": true,
+      "name": "Santi A",
+      "id": "pzergwv7"
+    },
+    {
+      "call": true,
+      "name": "Gabriel",
+      "id": "pf7ueb3o"
+    },
+    {
+      "call": true,
+      "name": "Joao",
+      "id": "p7ymhdu6"
+    },
+    {
+      "call": true,
+      "name": "Bernardo",
+      "id": "pdhzthhp"
+    },
+    {
+      "call": true,
+      "name": "Santiago",
+      "id": "pbg0m29a"
+    },
+    {
+      "call": true,
+      "name": "André",
+      "id": "pgwybro9"
+    }
+  ]
+}
