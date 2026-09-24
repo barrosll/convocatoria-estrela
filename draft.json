@@ -90,7 +90,13 @@
       "staff": "",
       "horario": "10:00",
       "local": "Fabril ",
-      "players": []
+      "players": [
+        {
+          "id": "pzjuhjof",
+          "name": "Filipe",
+          "call": true
+        }
+      ]
     }
   }
 }
