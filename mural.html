@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mural do Clube — Estrela Afonsoeirense</title>
+<link rel="icon" type="image/png" href="crest.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#0b0b0c;
+  --surface:#19191a;
+  --border:#2d2d2e;
+  --yellow:#f4c60c;
+  --yellow-deep:#caa000;
+  --text:#f5f3ea;
+  --muted:#9a958c;
+  --danger:#e5484d;
+  --good:#3ecf8e;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system-ui,sans-serif;}
+#app{max-width:640px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:20px;position:relative;}
+.loading{padding:80px 16px;text-align:center;color:var(--muted);font-family:'Barlow',sans-serif;font-size:14px;}
+.home-link{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;text-decoration:none;letter-spacing:.02em;}
+.home-link:hover{color:var(--yellow);}
+.header{display:flex;align-items:center;gap:14px;}
+.crest{flex:0 0 auto;width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}
+.eyebrow{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--yellow);text-transform:uppercase;margin:0 0 2px;}
+.title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(24px,6vw,32px);letter-spacing:.02em;text-transform:uppercase;margin:0;color:var(--text);line-height:1.05;}
+.top-bar{display:flex;justify-content:flex-end;align-items:center;gap:10px;}
+.edit-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bg);background:var(--yellow);padding:4px 10px;border-radius:20px;}
+.lock-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;padding:6px 11px;border-radius:8px;cursor:pointer;}
+.lock-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+.staff-link-row{display:flex;justify-content:center;margin-top:4px;}
+.staff-link{background:none;border:none;color:var(--muted);font-family:'Barlow',sans-serif;font-size:11px;cursor:pointer;padding:6px 10px;text-decoration:underline;text-underline-offset:3px;opacity:.65;}
+.staff-link:hover{opacity:1;color:var(--yellow);}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.field-label{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);margin-bottom:4px;}
+.field-input,.field-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:'Barlow',sans-serif;font-weight:500;font-size:14px;outline:none;}
+.field-input:focus,.field-textarea:focus{border-color:var(--yellow);}
+.field-textarea{resize:vertical;min-height:70px;font-family:'Barlow',sans-serif;}
+.add-btn{background:var(--yellow);color:var(--bg);border:none;border-radius:10px;padding:11px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;}
+.add-btn:hover{background:var(--yellow-deep);}
+.add-btn:disabled{opacity:.5;cursor:default;}
+.status-msg{font-size:12px;margin:0;}
+.status-msg.error{color:var(--danger);}
+.status-msg.ok{color:var(--good);}
+.aviso-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;}
+.aviso-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+.aviso-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;margin:0;}
+.aviso-date{font-size:11px;color:var(--yellow-deep);font-weight:700;white-space:nowrap;}
+.aviso-body{margin:0;font-size:13px;color:var(--muted);line-height:1.5;}
+.aviso-remove{align-self:flex-end;background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:4px 8px;text-decoration:underline;text-underline-offset:3px;}
+.aviso-remove:hover{color:var(--danger);}
+.empty-hint{text-align:center;color:var(--muted);font-size:13px;padding:20px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:320px;width:100%;display:flex;flex-direction:column;gap:12px;}
+.modal-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;text-transform:uppercase;margin:0;color:var(--text);}
+.modal-sub{font-size:12px;color:var(--muted);margin:0;}
+.modal-input{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-family:'Barlow',sans-serif;font-size:16px;letter-spacing:.15em;outline:none;text-align:center;}
+.modal-input:focus{border-color:var(--yellow);}
+.modal-error{color:var(--danger);font-size:12px;margin:0;min-height:14px;}
+.modal-actions{display:flex;gap:8px;}
+.modal-btn{flex:1;border-radius:10px;padding:10px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;text-transform:uppercase;cursor:pointer;border:none;}
+.modal-btn.primary{background:var(--yellow);color:var(--bg);}
+.modal-btn.primary:hover{background:var(--yellow-deep);}
+.modal-btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.modal-btn.ghost:hover{color:var(--text);border-color:var(--muted);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function appMain(){
+  var PIN_HASH = 'a2722a17de55e08d6546b1b6d001786d15ce63b658fc7ed226caf9d53834c1d3';
+
+  var syncKey = null;
+  try{ syncKey = localStorage.getItem('syncKey') || null; }catch(e){ syncKey = null; }
+
+  var root = document.getElementById('app');
+  var loaded = false;
+  var avisos = [];
+  var unlocked = false;
+  try{ unlocked = sessionStorage.getItem('staffUnlocked') === '1'; }catch(e){ unlocked = false; }
+  var modalOpen = false;
+  var modalStage = 'pin';
+  var modalErrorMsg = '';
+  var formTitle = '', formDate = '', formBody = '';
+  var saving = false;
+  var statusMsg = '';
+  var statusIsError = false;
+
+  function attr(str){
+    return String(str==null?'':str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function sha256Hex(str){
+    var enc = new TextEncoder().encode(str);
+    return crypto.subtle.digest('SHA-256', enc).then(function(buf){
+      var bytes = new Uint8Array(buf);
+      var hex = '';
+      for(var i=0;i<bytes.length;i++){
+        var h = bytes[i].toString(16);
+        if(h.length<2){ h = '0'+h; }
+        hex += h;
+      }
+      return hex;
+    });
+  }
+
+  function headerHTML(){
+    return '<a class="home-link no-print" href="index.html">&larr; Início</a>'
+    + '<div class="header">'
+      + '<img class="crest" src="crest.png" alt="Estrela Afonsoeirense">'
+      + '<div>'
+        + '<p class="eyebrow">Estrela Afonsoeirense</p>'
+        + '<h1 class="title">Mural do Clube</h1>'
+      + '</div>'
+    + '</div>';
+  }
+
+  function modalHTML(){
+    if(!modalOpen){ return ''; }
+    if(modalStage === 'token'){
+      return '<div class="modal-overlay" id="modal-overlay">'
+        + '<div class="modal-box">'
+          + '<h3 class="modal-title">Chave de sincronização</h3>'
+          + '<p class="modal-sub">Cole a chave fornecida pelo treinador (fica guardada só neste navegador).</p>'
+          + '<input type="password" class="modal-input" id="token-input" placeholder="Chave" style="letter-spacing:normal;font-size:13px;">'
+          + '<p class="modal-error">'+attr(modalErrorMsg)+'</p>'
+          + '<div class="modal-actions">'
+            + '<button type="button" class="modal-btn ghost" id="modal-cancel">Cancelar</button>'
+            + '<button type="button" class="modal-btn primary" id="modal-submit-token">Guardar</button>'
+          + '</div>'
+        + '</div>'
+      + '</div>';
+    }
+    return '<div class="modal-overlay" id="modal-overlay">'
+      + '<div class="modal-box">'
+        + '<h3 class="modal-title">Área do staff</h3>'
+        + '<p class="modal-sub">Introduza o código para publicar no mural.</p>'
+        + '<input type="password" inputmode="numeric" class="modal-input" id="pin-input" placeholder="••••••">'
+        + '<p class="modal-error">'+attr(modalErrorMsg)+'</p>'
+        + '<div class="modal-actions">'
+          + '<button type="button" class="modal-btn ghost" id="modal-cancel">Cancelar</button>'
+          + '<button type="button" class="modal-btn primary" id="modal-submit">Entrar</button>'
+        + '</div>'
+      + '</div>'
+    + '</div>';
+  }
+
+  function formHTML(){
+    if(!unlocked){ return ''; }
+    return '<div class="top-bar"><span class="edit-badge">Modo edição</span><button type="button" class="lock-btn" id="lock-btn">Bloquear</button></div>'
+      + '<div class="form-card">'
+        + '<div>'
+          + '<label class="field-label" for="f-title">Título</label>'
+          + '<input id="f-title" type="text" class="field-input" placeholder="Ex: Reunião de pais" value="'+attr(formTitle)+'">'
+        + '</div>'
+        + '<div>'
+          + '<label class="field-label" for="f-date">Data</label>'
+          + '<input id="f-date" type="text" class="field-input" placeholder="Ex: 5 de outubro" value="'+attr(formDate)+'">'
+        + '</div>'
+        + '<div>'
+          + '<label class="field-label" for="f-body">Mensagem</label>'
+          + '<textarea id="f-body" class="field-textarea" placeholder="Escreva o aviso...">'+attr(formBody)+'</textarea>'
+        + '</div>'
+        + '<button type="button" class="add-btn" id="add-btn"'+(saving?' disabled':'')+'>'+(saving?'A publicar…':'Publicar aviso')+'</button>'
+        + (statusMsg ? '<p class="status-msg '+(statusIsError?'error':'ok')+'">'+attr(statusMsg)+'</p>' : '')
+      + '</div>';
+  }
+
+  function listHTML(){
+    if(!avisos.length){
+      return '<p class="empty-hint">Ainda não há avisos publicados.</p>';
+    }
+    return avisos.map(function(a){
+      return '<div class="aviso-card">'
+        + '<div class="aviso-head"><h3 class="aviso-title">'+attr(a.title)+'</h3><span class="aviso-date">'+attr(a.date)+'</span></div>'
+        + '<p class="aviso-body">'+attr(a.body)+'</p>'
+        + (unlocked ? '<button type="button" class="aviso-remove" data-id="'+attr(a.id)+'">Remover</button>' : '')
+      + '</div>';
+    }).join('');
+  }
+
+  function loadingBody(){
+    return '<div class="loading">A carregar mural…</div>';
+  }
+
+  function bodyHTML(){
+    if(!loaded){ return loadingBody(); }
+    return headerHTML()
+      + formHTML()
+      + (!unlocked ? '<div class="staff-link-row"><button type="button" class="staff-link" id="staff-link">Área do staff</button></div>' : '')
+      + '<div style="display:flex;flex-direction:column;gap:10px;">' + listHTML() + '</div>'
+      + modalHTML();
+  }
+
+  function render(){
+    root.innerHTML = bodyHTML();
+    attachEvents();
+  }
+
+  function attachEvents(){
+    var lockBtn = root.querySelector('#lock-btn');
+    if(lockBtn){ lockBtn.addEventListener('click', function(){
+      unlocked = false;
+      try{ sessionStorage.removeItem('staffUnlocked'); }catch(e){}
+      render();
+    }); }
+
+    var staffLink = root.querySelector('#staff-link');
+    if(staffLink){ staffLink.addEventListener('click', function(){
+      modalOpen = true;
+      modalErrorMsg = '';
+      render();
+      var pinInput = root.querySelector('#pin-input');
+      if(pinInput){ pinInput.focus(); }
+    }); }
+
+    var overlay = root.querySelector('#modal-overlay');
+    if(overlay){ overlay.addEventListener('click', function(e){
+      if(e.target === overlay){ modalOpen = false; render(); }
+    }); }
+
+    var modalCancel = root.querySelector('#modal-cancel');
+    if(modalCancel){ modalCancel.addEventListener('click', function(){ modalOpen = false; render(); }); }
+
+    var modalSubmit = root.querySelector('#modal-submit');
+    if(modalSubmit){ modalSubmit.addEventListener('click', function(){ submitPin(); }); }
+    var pinInput = root.querySelector('#pin-input');
+    if(pinInput){ pinInput.addEventListener('keydown', function(e){ if(e.key==='Enter'){ submitPin(); } }); }
+
+    var modalSubmitToken = root.querySelector('#modal-submit-token');
+    if(modalSubmitToken){ modalSubmitToken.addEventListener('click', function(){ submitToken(); }); }
+    var tokenInput = root.querySelector('#token-input');
+    if(tokenInput){ tokenInput.addEventListener('keydown', function(e){ if(e.key==='Enter'){ submitToken(); } }); }
+
+    var fTitle = root.querySelector('#f-title');
+    if(fTitle){ fTitle.addEventListener('input', function(){ formTitle = fTitle.value; }); }
+    var fDate = root.querySelector('#f-date');
+    if(fDate){ fDate.addEventListener('input', function(){ formDate = fDate.value; }); }
+    var fBody = root.querySelector('#f-body');
+    if(fBody){ fBody.addEventListener('input', function(){ formBody = fBody.value; }); }
+
+    var addBtn = root.querySelector('#add-btn');
+    if(addBtn){ addBtn.addEventListener('click', function(){ publishAviso(); }); }
+
+    root.querySelectorAll('.aviso-remove[data-id]').forEach(function(btn){
+      btn.addEventListener('click', function(){ removeAviso(btn.dataset.id); });
+    });
+  }
+
+  function submitPin(){
+    var pinInput = root.querySelector('#pin-input');
+    var pin = pinInput ? pinInput.value : '';
+    sha256Hex(pin).then(function(hex){
+      if(hex === PIN_HASH){
+        unlocked = true;
+        try{ sessionStorage.setItem('staffUnlocked','1'); }catch(e){}
+        modalErrorMsg = '';
+        if(syncKey){
+          modalOpen = false;
+        } else {
+          modalStage = 'token';
+        }
+        render();
+        var tokenInput = root.querySelector('#token-input');
+        if(tokenInput){ tokenInput.focus(); }
+      } else {
+        modalErrorMsg = 'Código incorreto';
+        render();
+        var again = root.querySelector('#pin-input');
+        if(again){ again.focus(); }
+      }
+    });
+  }
+
+  function submitToken(){
+    var tokenInput = root.querySelector('#token-input');
+    var value = tokenInput ? tokenInput.value.trim() : '';
+    if(!value){
+      modalErrorMsg = 'Cole a chave antes de continuar';
+      render();
+      return;
+    }
+    syncKey = value;
+    try{ localStorage.setItem('syncKey', syncKey); }catch(e){}
+    modalOpen = false;
+    modalStage = 'pin';
+    modalErrorMsg = '';
+    render();
+  }
+
+  function publishAviso(){
+    if(!formTitle.trim() || !formBody.trim()){
+      statusMsg = 'Preencha ao menos o título e a mensagem';
+      statusIsError = true;
+      render();
+      return;
+    }
+    if(!syncKey){
+      modalOpen = true;
+      modalStage = 'token';
+      render();
+      return;
+    }
+    saving = true;
+    statusMsg = '';
+    render();
+    fetch('/api/avisos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ syncKey: syncKey, action: 'add', title: formTitle, date: formDate, body: formBody })
+    }).then(function(r){
+      if(r.status === 401){ throw {authFailed:true}; }
+      if(!r.ok){ return r.text().then(function(t){ throw {status:r.status, body:t.slice(0,150)}; }); }
+      return r.json();
+    }).then(function(data){
+      avisos = data.avisos || avisos;
+      formTitle = ''; formDate = ''; formBody = '';
+      saving = false;
+      statusMsg = 'Aviso publicado!';
+      statusIsError = false;
+      render();
+    }).catch(function(err){
+      saving = false;
+      if(err && err.authFailed){
+        syncKey = null;
+        try{ localStorage.removeItem('syncKey'); }catch(e){}
+        modalOpen = true;
+        modalStage = 'token';
+        modalErrorMsg = 'Chave incorreta — cole a chave certa';
+      }
+      statusMsg = 'Falha ao publicar' + (err && err.status ? ' (HTTP '+err.status+')' : '');
+      statusIsError = true;
+      render();
+    });
+  }
+
+  function removeAviso(id){
+    if(!syncKey){
+      modalOpen = true;
+      modalStage = 'token';
+      render();
+      return;
+    }
+    fetch('/api/avisos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ syncKey: syncKey, action: 'delete', id: id })
+    }).then(function(r){
+      if(r.status === 401){ throw {authFailed:true}; }
+      if(!r.ok){ throw new Error('fail'); }
+      return r.json();
+    }).then(function(data){
+      avisos = data.avisos || avisos;
+      render();
+    }).catch(function(err){
+      if(err && err.authFailed){
+        syncKey = null;
+        try{ localStorage.removeItem('syncKey'); }catch(e){}
+        modalOpen = true;
+        modalStage = 'token';
+        modalErrorMsg = 'Chave incorreta — cole a chave certa';
+        render();
+      }
+    });
+  }
+
+  function boot(){
+    fetch('/api/avisos', {cache:'no-store'}).then(function(r){
+      return r.ok ? r.json() : { avisos: [] };
+    }).then(function(data){
+      avisos = data.avisos || [];
+    }).catch(function(){
+      avisos = [];
+    }).then(function(){
+      loaded = true;
+      render();
+    });
+  }
+
+  render();
+  boot();
+})();
+</script>
+</body>
+</html>

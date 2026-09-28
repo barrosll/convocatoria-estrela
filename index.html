@@ -1,4 +1,4 @@
-﻿﻿<!doctype html>
+﻿﻿﻿<!doctype html>
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
@@ -87,6 +87,19 @@ a{color:inherit;}
 .clube-link:hover{color:var(--yellow);}
 .clube-link.soon{color:var(--muted);}
 .clube-link .tag{font-size:10px;color:var(--muted);margin-left:6px;text-transform:uppercase;font-weight:700;}
+
+.mural-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.mural-tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.mural-manage{font-size:11px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;}
+.mural-manage:hover{color:var(--yellow);}
+.aviso-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;}
+.aviso-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+.aviso-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;margin:0;}
+.aviso-date{font-size:11px;color:var(--yellow-deep);font-weight:700;white-space:nowrap;}
+.aviso-body{margin:0;font-size:13px;color:var(--muted);line-height:1.5;}
+.fb-embed{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;}
+.fb-embed iframe{display:block;width:100%;}
+.empty-hint{color:var(--muted);font-size:13px;text-align:center;padding:14px;}
 </style>
 </head>
 <body>
@@ -119,6 +132,7 @@ a{color:inherit;}
         Clube
         <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
       </button>
+      <a class="nav-item" href="sorteio-benjamins.pdf" target="_blank" rel="noopener">Sorteio</a>
       <a class="nav-item" href="loja.html">Loja</a>
     </div>
     <div class="clube-dropdown" id="clube-dropdown">
@@ -140,6 +154,28 @@ a{color:inherit;}
     <p class="chant-tag">Um por todos, todos por um</p>
     <p class="chant-q">Quem nós somos?</p>
     <p class="chant-main">Estrela! Estrela! Estrela!</p>
+  </div>
+
+  <div>
+    <div class="mural-head section-title">
+      <span>Mural do clube</span>
+      <a class="mural-manage" href="mural.html">Gerir mural</a>
+    </div>
+    <div id="mural-list" style="display:flex;flex-direction:column;gap:10px;">
+      <p class="empty-hint">A carregar avisos…</p>
+    </div>
+  </div>
+
+  <div>
+    <div class="mural-head section-title">
+      <span>Mural — Facebook</span>
+      <span class="mural-tag">@estrela_afonsoeirense</span>
+    </div>
+    <div class="fb-embed">
+      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61577260838622&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
+        width="100%" height="500" style="border:none;overflow:hidden;" scrolling="no" frameborder="0" allowfullscreen="true"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="lazy" title="Publicações do Facebook do Estrela Afonsoeirense"></iframe>
+    </div>
   </div>
 
   <div>
@@ -198,9 +234,35 @@ a{color:inherit;}
     });
   }
 })();
+
+(function(){
+  function attr(str){
+    return String(str==null?'':str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  var listEl = document.getElementById('mural-list');
+  if(!listEl){ return; }
+  fetch('/api/avisos', {cache:'no-store'}).then(function(r){
+    return r.ok ? r.json() : { avisos: [] };
+  }).then(function(data){
+    var avisos = data.avisos || [];
+    if(!avisos.length){
+      listEl.innerHTML = '<p class="empty-hint">Ainda não há avisos publicados.</p>';
+      return;
+    }
+    listEl.innerHTML = avisos.map(function(a){
+      return '<div class="aviso-card">'
+        + '<div class="aviso-head"><h3 class="aviso-title">'+attr(a.title)+'</h3><span class="aviso-date">'+attr(a.date)+'</span></div>'
+        + '<p class="aviso-body">'+attr(a.body)+'</p>'
+      + '</div>';
+    }).join('');
+  }).catch(function(){
+    listEl.innerHTML = '<p class="empty-hint">Não foi possível carregar os avisos.</p>';
+  });
+})();
 </script>
 </body>
 </html>
+
 
 
 
