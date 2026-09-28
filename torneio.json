@@ -1,0 +1,40 @@
+{
+  "updatedAt": "2026-09-28T18:00:00.000Z",
+  "jornadas": [
+    {
+      "numero": 1,
+      "jogos": [
+        { "home": "Gd Alcochetense", "away": "Jfc Sarilhense", "sched": "10 out 10:30", "stadium": "Estadio Municipal Samouco", "scoreHome": null, "scoreAway": null },
+        { "home": "Botafogo Fc Cabanas", "away": "Efc Afonsoeirense", "sched": "10 out 10:30", "stadium": "A Indicar", "scoreHome": null, "scoreAway": null }
+      ]
+    },
+    {
+      "numero": 2,
+      "jogos": [
+        { "home": "Efc Afonsoeirense", "away": "Gd Alcochetense", "sched": "17 out 10:30", "stadium": "Campo Municipal Do Afonsoeiro", "scoreHome": null, "scoreAway": null },
+        { "home": "Jfc Sarilhense", "away": "Quintajense Fc", "sched": "17 out 10:30", "stadium": "Complexo Desportivo Quinta Das Oliveiras", "scoreHome": null, "scoreAway": null }
+      ]
+    },
+    {
+      "numero": 3,
+      "jogos": [
+        { "home": "Quintajense Fc", "away": "Efc Afonsoeirense", "sched": "24 out 10:30", "stadium": "Campo Leonel Martins", "scoreHome": null, "scoreAway": null },
+        { "home": "Gd Alcochetense", "away": "Botafogo Fc Cabanas", "sched": "24 out 10:30", "stadium": "Estadio Municipal Samouco", "scoreHome": null, "scoreAway": null }
+      ]
+    },
+    {
+      "numero": 4,
+      "jogos": [
+        { "home": "Efc Afonsoeirense", "away": "Jfc Sarilhense", "sched": "31 out 10:30", "stadium": "Campo Municipal Do Afonsoeiro", "scoreHome": null, "scoreAway": null },
+        { "home": "Botafogo Fc Cabanas", "away": "Quintajense Fc", "sched": "31 out 10:30", "stadium": "A Indicar", "scoreHome": null, "scoreAway": null }
+      ]
+    },
+    {
+      "numero": 5,
+      "jogos": [
+        { "home": "Quintajense Fc", "away": "Gd Alcochetense", "sched": "14 nov 10:30", "stadium": "Campo Leonel Martins", "scoreHome": null, "scoreAway": null },
+        { "home": "Jfc Sarilhense", "away": "Botafogo Fc Cabanas", "sched": "14 nov 10:30", "stadium": "Complexo Desportivo Quinta Das Oliveiras", "scoreHome": null, "scoreAway": null }
+      ]
+    }
+  ]
+}
