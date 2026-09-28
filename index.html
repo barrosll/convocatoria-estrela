@@ -69,9 +69,28 @@ a{color:inherit;}
 .social-btn{width:38px;height:38px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--yellow);text-decoration:none;transition:border-color .15s ease;}
 .social-btn:hover{border-color:var(--yellow);}
 .social-btn svg{width:18px;height:18px;}
+
+.official-bar{background:var(--yellow);color:var(--bg);text-align:center;padding:9px 12px;font-family:'Barlow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;}
+
+.nav-bar{display:flex;gap:24px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow-x:auto;}
+.nav-item{padding:13px 0;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap;cursor:pointer;background:none;border:none;display:flex;align-items:center;gap:5px;}
+.nav-item:hover{color:var(--text);}
+.nav-item.open{color:var(--yellow);}
+.nav-item svg{flex:0 0 auto;transition:transform .15s ease;}
+.nav-item.open svg{transform:rotate(180deg);}
+
+.clube-dropdown{background:var(--surface);display:none;flex-direction:column;gap:2px;padding:14px 4px;margin-top:-1px;}
+.clube-dropdown.show{display:flex;}
+.clube-dropdown-label{font-family:'Barlow',sans-serif;font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;padding:0 4px;}
+.clube-link{padding:9px 4px;font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;color:var(--text);text-decoration:none;border-top:1px solid var(--border);}
+.clube-link:first-of-type{border-top:none;}
+.clube-link:hover{color:var(--yellow);}
+.clube-link.soon{color:var(--muted);}
+.clube-link .tag{font-size:10px;color:var(--muted);margin-left:6px;text-transform:uppercase;font-weight:700;}
 </style>
 </head>
 <body>
+<div class="official-bar">Site oficial do Estrela Futebol Clube Afonsoeirense</div>
 <div class="wrap">
 
   <div class="header">
@@ -90,6 +109,27 @@ a{color:inherit;}
       <a class="social-btn" href="https://www.instagram.com/estrela_afonsoeirense" target="_blank" rel="noopener" aria-label="Instagram do Estrela Afonsoeirense">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none"></circle></svg>
       </a>
+    </div>
+  </div>
+
+  <div>
+    <div class="nav-bar">
+      <a class="nav-item" href="index.html">Início</a>
+      <button type="button" class="nav-item" id="clube-toggle">
+        Clube
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <a class="nav-item" href="convocatoria.html">Convocatórias</a>
+      <a class="nav-item" href="loja.html">Loja</a>
+    </div>
+    <div class="clube-dropdown" id="clube-dropdown">
+      <p class="clube-dropdown-label">Escalões</p>
+      <a class="clube-link" href="convocatoria.html">Benjamins B</a>
+      <span class="clube-link soon">Petizes A <span class="tag">Em breve</span></span>
+      <span class="clube-link soon">Petizes B <span class="tag">Em breve</span></span>
+      <span class="clube-link soon">Traquinas A <span class="tag">Em breve</span></span>
+      <span class="clube-link soon">Traquinas B <span class="tag">Em breve</span></span>
+      <span class="clube-link soon">Escola Fut 7 <span class="tag">Em breve</span></span>
     </div>
   </div>
 
@@ -148,8 +188,21 @@ a{color:inherit;}
   </div>
 
 </div>
+<script>
+(function(){
+  var btn = document.getElementById('clube-toggle');
+  var panel = document.getElementById('clube-dropdown');
+  if(btn && panel){
+    btn.addEventListener('click', function(){
+      var open = panel.classList.toggle('show');
+      btn.classList.toggle('open', open);
+    });
+  }
+})();
+</script>
 </body>
 </html>
+
 
 
 
