@@ -214,7 +214,7 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
       return '<div class="aviso-card">'
         + '<div class="aviso-head"><h3 class="aviso-title">'+attr(a.title)+'</h3><span class="aviso-date">'+attr(a.date)+'</span></div>'
         + '<p class="aviso-body">'+attr(a.body)+'</p>'
-        + (a.image ? '<img class="aviso-img" src="'+attr(a.image)+'" loading="lazy">' : '')
+        + (a.image ? '<img class="aviso-img" src="/api/avisos-img?path='+encodeURIComponent(a.image)+'" loading="lazy">' : '')
         + (unlocked ? '<button type="button" class="aviso-remove" data-id="'+attr(a.id)+'">Remover</button>' : '')
       + '</div>';
     }).join('');

@@ -97,8 +97,8 @@ a{color:inherit;}
 .aviso-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;margin:0;}
 .aviso-date{font-size:11px;color:var(--yellow-deep);font-weight:700;white-space:nowrap;}
 .aviso-body{margin:0;font-size:13px;color:var(--muted);line-height:1.5;}
-.fb-embed{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;}
-.fb-embed iframe{display:block;width:100%;}
+.fb-embed{display:flex;justify-content:center;}
+.fb-embed iframe{border-radius:14px;border:1px solid var(--border);}
 .empty-hint{color:var(--muted);font-size:13px;text-align:center;padding:14px;}
 .aviso-img{width:100%;border-radius:10px;margin-top:6px;display:block;}
 </style>
@@ -257,7 +257,7 @@ a{color:inherit;}
       return '<div class="aviso-card">'
         + '<div class="aviso-head"><h3 class="aviso-title">'+attr(a.title)+'</h3><span class="aviso-date">'+attr(a.date)+'</span></div>'
         + '<p class="aviso-body">'+attr(a.body)+'</p>'
-        + (a.image ? '<img class="aviso-img" src="'+attr(a.image)+'" loading="lazy">' : '')
+        + (a.image ? '<img class="aviso-img" src="/api/avisos-img?path='+encodeURIComponent(a.image)+'" loading="lazy">' : '')
       + '</div>';
     }).join('');
   }).catch(function(){
