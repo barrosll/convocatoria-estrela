@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Torneio Série D — Estrela Afonsoeirense</title>
+<link rel="icon" type="image/png" href="crest.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#0b0b0c;
+  --surface:#19191a;
+  --border:#2d2d2e;
+  --yellow:#f4c60c;
+  --yellow-deep:#caa000;
+  --text:#f5f3ea;
+  --muted:#9a958c;
+  --good:#3ecf8e;
+  --danger:#e5484d;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system-ui,sans-serif;}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:20px;}
+.home-link{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;text-decoration:none;letter-spacing:.02em;}
+.home-link:hover{color:var(--yellow);}
+.header{display:flex;align-items:center;gap:14px;}
+.crest{flex:0 0 auto;width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}
+.eyebrow{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--yellow);text-transform:uppercase;margin:0 0 2px;}
+.title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(24px,6vw,32px);letter-spacing:.02em;text-transform:uppercase;margin:0;color:var(--text);line-height:1.05;}
+.subtitle{margin:4px 0 0;font-size:12px;color:var(--muted);}
+.loading{padding:60px 16px;text-align:center;color:var(--muted);font-size:14px;}
+.jornada-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);margin:0 0 10px;border-bottom:2px solid var(--yellow);padding-bottom:8px;}
+.game-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.game-card.estrela{border-color:var(--yellow);}
+.game-top{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--muted);}
+.game-teams{display:flex;justify-content:space-between;align-items:center;font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;gap:8px;}
+.game-teams span:first-child,.game-teams span:last-child{flex:1;}
+.game-teams span:last-child{text-align:right;}
+.game-score{font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;color:var(--yellow);white-space:nowrap;}
+.game-venue{font-size:11px;color:var(--muted);}
+.updated-hint{font-size:11px;color:var(--muted);text-align:center;margin:0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home-link" href="index.html">&larr; Início</a>
+  <div class="header">
+    <img class="crest" src="crest.png" alt="Estrela Afonsoeirense">
+    <div>
+      <p class="eyebrow">Prova Distrital Benjamins 1º Ano Sub-10</p>
+      <h1 class="title">Torneio — Série D</h1>
+      <p class="subtitle">Calendário completo do grupo, atualizado automaticamente</p>
+    </div>
+  </div>
+  <div id="torneio-content">
+    <div class="loading">A carregar calendário…</div>
+  </div>
+</div>
+<script>
+(function(){
+  function attr(str){
+    return String(str==null?'':str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function isEstrela(name){
+    return /afonsoeirense/i.test(name||'');
+  }
+  var el = document.getElementById('torneio-content');
+  fetch('/api/torneio', {cache:'no-store'}).then(function(r){
+    return r.ok ? r.json() : { jornadas: [] };
+  }).then(function(data){
+    var jornadas = data.jornadas || [];
+    if(!jornadas.length){
+      el.innerHTML = '<p class="loading">Calendário ainda não disponível.</p>';
+      return;
+    }
+    var html = jornadas.map(function(j){
+      var games = (j.jogos || []).map(function(g){
+        var estrela = isEstrela(g.home) || isEstrela(g.away);
+        var hasScore = g.scoreHome !== null && g.scoreHome !== undefined && g.scoreAway !== null && g.scoreAway !== undefined;
+        return '<div class="game-card' + (estrela ? ' estrela' : '') + '">'
+          + '<div class="game-top"><span>' + attr(g.sched||'') + '</span></div>'
+          + '<div class="game-teams">'
+            + '<span>' + attr(g.home) + '</span>'
+            + '<span class="game-score">' + (hasScore ? (g.scoreHome + ' - ' + g.scoreAway) : 'vs') + '</span>'
+            + '<span>' + attr(g.away) + '</span>'
+          + '</div>'
+          + (g.stadium ? '<div class="game-venue">' + attr(g.stadium) + '</div>' : '')
+        + '</div>';
+      }).join('');
+      return '<div><h2 class="jornada-title">Jornada ' + j.numero + '</h2>' + games + '</div>';
+    }).join('');
+    if(data.updatedAt){
+      var d = new Date(data.updatedAt);
+      html += '<p class="updated-hint">Atualizado automaticamente pela última vez em ' + d.toLocaleDateString('pt-PT') + '</p>';
+    }
+    el.innerHTML = html;
+  }).catch(function(){
+    el.innerHTML = '<p class="loading">Não foi possível carregar o calendário.</p>';
+  });
+})();
+</script>
+</body>
+</html>

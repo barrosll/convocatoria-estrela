@@ -1,6 +1,7 @@
-import { githubConfig, getFile, putFileWithRetry } from "./_lib.mjs";
+import { githubConfig, getFile, putFileWithRetry, contentsUrl } from "./_lib.mjs";
 
 const TEAM_NAME_MATCH = /afonsoeirense/i;
+const COMPETITION_URL = "https://resultados.fpf.pt/Competition/Details?competitionId=30179&seasonId=106";
 
 function extractSerieDBlock(html) {
   const marker = /<span>\s*S[ÉE]RIE\s*D\s*<\/span>/i;
@@ -14,29 +15,50 @@ function extractSerieDBlock(html) {
 }
 
 function extractGames(block) {
+  const homeMatches = [...block.matchAll(/home-team[^>]*>([^<]*)</g)];
+  const awayMatches = [...block.matchAll(/away-team[^>]*>([^<]*)</g)];
+  const schedMatches = [...block.matchAll(/game-schedule">([\s\S]*?)<\/span>/g)];
+  const stadiumMatches = [...block.matchAll(/game-list-stadium"[^>]*>\s*<small[^>]*>([^<]*)</g)];
+
   const games = [];
-  const gameRe = /<div class="game" style="min-height: 31px">([\s\S]*?)<\/div>/g;
-  let gm;
-  while ((gm = gameRe.exec(block))) {
-    const inner = gm[1];
-    const homeMatch = /home-team[^>]*>([^<]*)</.exec(inner);
-    const awayMatch = /away-team[^>]*>([^<]*)</.exec(inner);
-    const home = homeMatch ? homeMatch[1].trim() : "";
-    const away = awayMatch ? awayMatch[1].trim() : "";
-    const schedMatch = /game-schedule">([\s\S]*?)<\/span>/.exec(inner);
-    const sched = schedMatch
-      ? schedMatch[1].replace(/<br\s*\/?>/gi, " ").replace(/\s+/g, " ").trim()
-      : "";
-    const scoreMatch = /(\d{1,2})\s*[-–xX×]\s*(\d{1,2})/.exec(inner);
+  const count = Math.min(homeMatches.length, awayMatches.length);
+  for (let i = 0; i < count; i++) {
+    const home = (homeMatches[i][1] || "").trim();
+    const away = (awayMatches[i][1] || "").trim();
+    const schedRaw = schedMatches[i] ? schedMatches[i][1] : "";
+    const sched = schedRaw.replace(/<br\s*\/?>/gi, " ").replace(/\s+/g, " ").trim();
+    const stadium = stadiumMatches[i] ? stadiumMatches[i][1].trim() : "";
+    const scoreMatch = /(\d{1,2})\s*[-–xX×]\s*(\d{1,2})/.exec(sched) || null;
     games.push({
       home,
       away,
       sched,
+      stadium,
       scoreHome: scoreMatch ? Number(scoreMatch[1]) : null,
       scoreAway: scoreMatch ? Number(scoreMatch[2]) : null
     });
   }
   return games;
+}
+
+function extractFixtureIds(block) {
+  const ids = [...new Set([...block.matchAll(/fixtureId=(\d+)/g)].map((m) => m[1]))];
+  return ids;
+}
+
+async function fetchViaScraper(apiKey, targetUrl) {
+  const target = encodeURIComponent(targetUrl);
+  const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${target}&premium=true`;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const r = await fetch(scraperUrl);
+      if (r.ok) return await r.text();
+    } catch (e) {
+      // retry
+    }
+    await new Promise((res) => setTimeout(res, 2000));
+  }
+  return null;
 }
 
 export default async (req) => {
@@ -48,19 +70,7 @@ export default async (req) => {
     });
   }
 
-  const target = encodeURIComponent("https://resultados.fpf.pt/Competition/Details?competitionId=30179&seasonId=106");
-  const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${target}&premium=true`;
-
-  let html = null;
-  for (let attempt = 0; attempt < 3 && !html; attempt++) {
-    try {
-      const r = await fetch(scraperUrl);
-      if (r.ok) html = await r.text();
-    } catch (e) {
-      // retry
-    }
-    if (!html) await new Promise((res) => setTimeout(res, 2000));
-  }
+  const html = await fetchViaScraper(apiKey, COMPETITION_URL);
   if (!html) {
     return new Response(JSON.stringify({ error: "fetch_failed" }), {
       status: 502,
@@ -76,16 +86,18 @@ export default async (req) => {
     });
   }
 
-  const games = extractGames(block).filter(
+  // --- Part 1: Estrela's own results -> resultados.json (unchanged behaviour) ---
+  const jornada1Games = extractGames(block);
+  const estrelaGames = jornada1Games.filter(
     (g) => TEAM_NAME_MATCH.test(g.home) || TEAM_NAME_MATCH.test(g.away)
   );
-  const withScores = games.filter((g) => g.scoreHome !== null && g.scoreAway !== null);
+  const withScores = estrelaGames.filter((g) => g.scoreHome !== null && g.scoreAway !== null);
 
   const cfg = githubConfig();
-  const existing = await getFile(cfg, "resultados.json");
-  const current = (existing && existing.content && existing.content.resultados) || [];
+  const existingResultados = await getFile(cfg, "resultados.json");
+  const currentResultados = (existingResultados && existingResultados.content && existingResultados.content.resultados) || [];
 
-  const next = current.slice();
+  const nextResultados = currentResultados.slice();
   let added = 0;
   for (const g of withScores) {
     const isHome = TEAM_NAME_MATCH.test(g.home);
@@ -93,11 +105,11 @@ export default async (req) => {
     const golosEstrela = isHome ? g.scoreHome : g.scoreAway;
     const golosAdversario = isHome ? g.scoreAway : g.scoreHome;
     const dedupKey = (adversario + "|" + g.sched).toLowerCase();
-    const already = next.some(
+    const already = nextResultados.some(
       (r) => r.source === "fpf" && (r.adversario + "|" + r.data).toLowerCase() === dedupKey
     );
     if (already) continue;
-    next.unshift({
+    nextResultados.unshift({
       id: Math.random().toString(36).slice(2, 10),
       adversario,
       data: g.sched,
@@ -108,13 +120,45 @@ export default async (req) => {
     });
     added++;
   }
-
   if (added > 0) {
-    await putFileWithRetry(cfg, "resultados.json", { resultados: next }, "Auto: novos resultados do campeonato oficial (FPF)");
+    await putFileWithRetry(cfg, "resultados.json", { resultados: nextResultados }, "Auto: novos resultados do campeonato oficial (FPF)");
   }
 
+  // --- Part 2: full Serie D schedule (all jornadas) -> torneio.json ---
+  const fixtureIds = extractFixtureIds(block);
+  const jornadas = [];
+  jornadas.push({ numero: 1, jogos: jornada1Games });
+
+  for (let i = 0; i < fixtureIds.length; i++) {
+    const jornadaNum = i + 2; // fixtureIds list excludes jornada 1's own link typically appears too; guard below
+    if (jornadaNum > fixtureIds.length + 1) break;
+    const fixHtml = await fetchViaScraper(
+      apiKey,
+      `https://resultados.fpf.pt/Competition/GetClassificationAndMatchesByFixture?fixtureId=${fixtureIds[i]}`
+    );
+    if (!fixHtml) continue;
+    const games = extractGames(fixHtml);
+    if (games.length) jornadas.push({ numero: jornadaNum, jogos: games });
+  }
+
+  jornadas.sort((a, b) => a.numero - b.numero);
+  const uniqueJornadas = [];
+  const seenNum = new Set();
+  for (const j of jornadas) {
+    if (seenNum.has(j.numero)) continue;
+    seenNum.add(j.numero);
+    uniqueJornadas.push(j);
+  }
+
+  await putFileWithRetry(
+    cfg,
+    "torneio.json",
+    { updatedAt: new Date().toISOString(), jornadas: uniqueJornadas },
+    "Auto: atualiza calendario Serie D"
+  );
+
   return new Response(
-    JSON.stringify({ ok: true, foundGames: games.length, withScores: withScores.length, added }),
+    JSON.stringify({ ok: true, foundGames: estrelaGames.length, withScores: withScores.length, added, jornadas: uniqueJornadas.length }),
     { status: 200, headers: { "Content-Type": "application/json" } }
   );
 };
