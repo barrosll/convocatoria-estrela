@@ -1,4 +1,4 @@
-import { githubConfig, getFile, putFileWithRetry, contentsUrl } from "./_lib.mjs";
+import { githubConfig, getFile, putFileWithRetry } from "./_lib.mjs";
 
 const TEAM_NAME_MATCH = /afonsoeirense/i;
 const COMPETITION_URL = "https://resultados.fpf.pt/Competition/Details?competitionId=30179&seasonId=106";
@@ -41,9 +41,9 @@ function extractGames(block) {
   return games;
 }
 
-function extractFixtureIds(block) {
-  const ids = [...new Set([...block.matchAll(/fixtureId=(\d+)/g)].map((m) => m[1]))];
-  return ids;
+function extractCurrentJornadaNumber(block) {
+  const m = /<a class="text-center current"[^>]*>(\d+)<\/a>/.exec(block);
+  return m ? Number(m[1]) : null;
 }
 
 async function fetchViaScraper(apiKey, targetUrl) {
@@ -56,7 +56,7 @@ async function fetchViaScraper(apiKey, targetUrl) {
     } catch (e) {
       // retry
     }
-    await new Promise((res) => setTimeout(res, 2000));
+    await new Promise((res) => setTimeout(res, 1500));
   }
   return null;
 }
@@ -86,17 +86,18 @@ export default async (req) => {
     });
   }
 
-  // --- Part 1: Estrela's own results -> resultados.json (unchanged behaviour) ---
-  const jornada1Games = extractGames(block);
-  const estrelaGames = jornada1Games.filter(
+  const games = extractGames(block);
+  const jornadaNum = extractCurrentJornadaNumber(block) || 1;
+  const cfg = githubConfig();
+
+  // --- Update Estrela's own results -> resultados.json ---
+  const estrelaGames = games.filter(
     (g) => TEAM_NAME_MATCH.test(g.home) || TEAM_NAME_MATCH.test(g.away)
   );
   const withScores = estrelaGames.filter((g) => g.scoreHome !== null && g.scoreAway !== null);
 
-  const cfg = githubConfig();
   const existingResultados = await getFile(cfg, "resultados.json");
   const currentResultados = (existingResultados && existingResultados.content && existingResultados.content.resultados) || [];
-
   const nextResultados = currentResultados.slice();
   let added = 0;
   for (const g of withScores) {
@@ -124,41 +125,25 @@ export default async (req) => {
     await putFileWithRetry(cfg, "resultados.json", { resultados: nextResultados }, "Auto: novos resultados do campeonato oficial (FPF)");
   }
 
-  // --- Part 2: full Serie D schedule (all jornadas) -> torneio.json ---
-  const fixtureIds = extractFixtureIds(block);
-  const jornadas = [];
-  jornadas.push({ numero: 1, jogos: jornada1Games });
-
-  for (let i = 0; i < fixtureIds.length; i++) {
-    const jornadaNum = i + 2; // fixtureIds list excludes jornada 1's own link typically appears too; guard below
-    if (jornadaNum > fixtureIds.length + 1) break;
-    const fixHtml = await fetchViaScraper(
-      apiKey,
-      `https://resultados.fpf.pt/Competition/GetClassificationAndMatchesByFixture?fixtureId=${fixtureIds[i]}`
-    );
-    if (!fixHtml) continue;
-    const games = extractGames(fixHtml);
-    if (games.length) jornadas.push({ numero: jornadaNum, jogos: games });
+  // --- Merge this jornada's games into torneio.json (keeps other jornadas as-is) ---
+  const existingTorneio = await getFile(cfg, "torneio.json");
+  const jornadas = (existingTorneio && existingTorneio.content && existingTorneio.content.jornadas) || [];
+  const idx = jornadas.findIndex((j) => j.numero === jornadaNum);
+  if (idx >= 0) {
+    jornadas[idx] = { numero: jornadaNum, jogos: games };
+  } else {
+    jornadas.push({ numero: jornadaNum, jogos: games });
   }
-
   jornadas.sort((a, b) => a.numero - b.numero);
-  const uniqueJornadas = [];
-  const seenNum = new Set();
-  for (const j of jornadas) {
-    if (seenNum.has(j.numero)) continue;
-    seenNum.add(j.numero);
-    uniqueJornadas.push(j);
-  }
-
   await putFileWithRetry(
     cfg,
     "torneio.json",
-    { updatedAt: new Date().toISOString(), jornadas: uniqueJornadas },
-    "Auto: atualiza calendario Serie D"
+    { updatedAt: new Date().toISOString(), jornadas },
+    "Auto: atualiza jornada " + jornadaNum + " do calendario"
   );
 
   return new Response(
-    JSON.stringify({ ok: true, foundGames: estrelaGames.length, withScores: withScores.length, added, jornadas: uniqueJornadas.length }),
+    JSON.stringify({ ok: true, jornada: jornadaNum, foundGames: estrelaGames.length, withScores: withScores.length, added }),
     { status: 200, headers: { "Content-Type": "application/json" } }
   );
 };
