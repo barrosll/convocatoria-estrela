@@ -88,6 +88,25 @@ a{color:inherit;}
 .clube-link.soon{color:var(--muted);}
 .clube-link .tag{font-size:10px;color:var(--muted);margin-left:6px;text-transform:uppercase;font-weight:700;}
 
+.clube-team-toggle{width:100%;text-align:left;background:none;border:none;padding:9px 4px;font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);}
+.clube-team-toggle svg{flex:0 0 auto;transition:transform .15s ease;}
+.clube-team-toggle.open svg{transform:rotate(180deg);}
+.clube-team-sub{display:none;flex-direction:column;padding-left:12px;}
+.clube-team-sub.show{display:flex;}
+.clube-sublink{padding:8px 4px;font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;color:var(--muted);text-decoration:none;background:none;border:none;text-align:left;cursor:pointer;}
+.clube-sublink:hover{color:var(--yellow);}
+.clube-results{display:none;flex-direction:column;gap:8px;padding:4px;}
+.clube-results.show{display:flex;}
+.clube-back{align-self:flex-start;background:none;border:none;padding:4px 0;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
+.clube-back:hover{color:var(--yellow);}
+.clube-results-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin:2px 0 4px;color:var(--yellow);}
+.result-mini{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;}
+.result-mini-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.result-mini-date{font-size:11px;color:var(--muted);}
+.result-mini-tag{font-size:11px;font-weight:700;text-transform:uppercase;}
+.result-mini-teams{display:flex;justify-content:space-between;align-items:center;font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;}
+.result-mini-score{font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;color:var(--yellow);}
+
 .mural-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;}
 .mural-manage{font-size:11px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;}
 .mural-manage:hover{color:var(--yellow);}
@@ -134,13 +153,32 @@ a{color:inherit;}
       <a class="nav-item" href="loja.html">Loja</a>
     </div>
     <div class="clube-dropdown" id="clube-dropdown">
-      <p class="clube-dropdown-label">Escalões</p>
-      <a class="clube-link" href="convocatoria.html">Benjamins B</a>
-      <span class="clube-link soon">Petizes A <span class="tag">Em breve</span></span>
-      <span class="clube-link soon">Petizes B <span class="tag">Em breve</span></span>
-      <span class="clube-link soon">Traquinas A <span class="tag">Em breve</span></span>
-      <span class="clube-link soon">Traquinas B <span class="tag">Em breve</span></span>
-      <span class="clube-link soon">Escola Fut 7 <span class="tag">Em breve</span></span>
+      <div id="clube-menu-view">
+        <p class="clube-dropdown-label">Escalões</p>
+        <button type="button" class="clube-team-toggle" id="benjamins-toggle">
+          <span>Benjamins B</span>
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <div class="clube-team-sub" id="benjamins-sub">
+          <a class="clube-sublink" href="convocatoria.html">Convocação</a>
+          <button type="button" class="clube-sublink" id="resultados-toggle">Últimos resultados</button>
+        </div>
+        <span class="clube-link soon">Petizes A <span class="tag">Em breve</span></span>
+        <span class="clube-link soon">Petizes B <span class="tag">Em breve</span></span>
+        <span class="clube-link soon">Traquinas A <span class="tag">Em breve</span></span>
+        <span class="clube-link soon">Traquinas B <span class="tag">Em breve</span></span>
+        <span class="clube-link soon">Escola Fut 7 <span class="tag">Em breve</span></span>
+      </div>
+      <div class="clube-results" id="clube-results">
+        <button type="button" class="clube-back" id="results-back">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+          Escalões
+        </button>
+        <p class="clube-results-title">Benjamins B — Últimos jogos</p>
+        <div id="clube-results-list" style="display:flex;flex-direction:column;gap:8px;">
+          <p class="empty-hint">A carregar…</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -228,6 +266,72 @@ a{color:inherit;}
     btn.addEventListener('click', function(){
       var open = panel.classList.toggle('show');
       btn.classList.toggle('open', open);
+    });
+  }
+})();
+
+(function(){
+  function attr(str){
+    return String(str==null?'':str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function resultInfo(ge, ga){
+    ge = Number(ge)||0; ga = Number(ga)||0;
+    if(ge > ga){ return { label: 'Vitória', color: '#3ecf8e' }; }
+    if(ge < ga){ return { label: 'Derrota', color: '#e5484d' }; }
+    return { label: 'Empate', color: '#f4c60c' };
+  }
+
+  var benjaminsToggle = document.getElementById('benjamins-toggle');
+  var benjaminsSub = document.getElementById('benjamins-sub');
+  if(benjaminsToggle && benjaminsSub){
+    benjaminsToggle.addEventListener('click', function(){
+      var open = benjaminsSub.classList.toggle('show');
+      benjaminsToggle.classList.toggle('open', open);
+    });
+  }
+
+  var resultadosToggle = document.getElementById('resultados-toggle');
+  var menuView = document.getElementById('clube-menu-view');
+  var resultsView = document.getElementById('clube-results');
+  var resultsBack = document.getElementById('results-back');
+  var resultsList = document.getElementById('clube-results-list');
+  var resultsLoaded = false;
+
+  if(resultadosToggle && menuView && resultsView){
+    resultadosToggle.addEventListener('click', function(){
+      menuView.style.display = 'none';
+      resultsView.classList.add('show');
+      if(!resultsLoaded){
+        fetch('/api/resultados', {cache:'no-store'}).then(function(r){
+          return r.ok ? r.json() : { resultados: [] };
+        }).then(function(data){
+          var resultados = data.resultados || [];
+          if(!resultados.length){
+            resultsList.innerHTML = '<p class="empty-hint">Ainda não há resultados publicados.</p>';
+            return;
+          }
+          resultsList.innerHTML = resultados.map(function(r){
+            var info = resultInfo(r.golosEstrela, r.golosAdversario);
+            var home = r.local === 'casa' ? 'Estrela' : r.adversario;
+            var away = r.local === 'casa' ? r.adversario : 'Estrela';
+            var score = r.local === 'casa' ? (r.golosEstrela+'-'+r.golosAdversario) : (r.golosAdversario+'-'+r.golosEstrela);
+            return '<div class="result-mini">'
+              + '<div class="result-mini-head"><span class="result-mini-date">'+attr(r.data)+'</span><span class="result-mini-tag" style="color:'+info.color+';">'+info.label+'</span></div>'
+              + '<div class="result-mini-teams"><span>'+attr(home)+'</span><span class="result-mini-score">'+attr(score)+'</span><span>'+attr(away)+'</span></div>'
+            + '</div>';
+          }).join('');
+          resultsLoaded = true;
+        }).catch(function(){
+          resultsList.innerHTML = '<p class="empty-hint">Não foi possível carregar os resultados.</p>';
+        });
+      }
+    });
+  }
+
+  if(resultsBack && menuView && resultsView){
+    resultsBack.addEventListener('click', function(){
+      resultsView.classList.remove('show');
+      menuView.style.display = '';
     });
   }
 })();
