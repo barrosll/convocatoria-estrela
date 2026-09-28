@@ -52,6 +52,11 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
 .aviso-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;margin:0;}
 .aviso-date{font-size:11px;color:var(--yellow-deep);font-weight:700;white-space:nowrap;}
 .aviso-body{margin:0;font-size:13px;color:var(--muted);line-height:1.5;}
+.aviso-img{width:100%;border-radius:10px;margin-top:6px;display:block;}
+.image-preview{position:relative;margin-top:8px;}
+.image-preview img{width:100%;border-radius:10px;display:block;}
+.image-remove{position:absolute;top:8px;right:8px;background:rgba(11,11,12,.85);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:5px 9px;font-size:11px;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;}
+.image-remove:hover{border-color:var(--danger);color:var(--danger);}
 .aviso-remove{align-self:flex-end;background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:4px 8px;text-decoration:underline;text-underline-offset:3px;}
 .aviso-remove:hover{color:var(--danger);}
 .empty-hint{text-align:center;color:var(--muted);font-size:13px;padding:20px;}
@@ -88,12 +93,36 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
   var modalStage = 'pin';
   var modalErrorMsg = '';
   var formTitle = '', formDate = '', formBody = '';
+  var formImageBase64 = null;
+  var formImagePreviewUrl = null;
   var saving = false;
   var statusMsg = '';
   var statusIsError = false;
 
   function attr(str){
     return String(str==null?'':str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function readAndResizeImage(file, maxDim, quality, cb){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', quality);
+        cb(dataUrl);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   function sha256Hex(str){
@@ -167,6 +196,11 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
           + '<label class="field-label" for="f-body">Mensagem</label>'
           + '<textarea id="f-body" class="field-textarea" placeholder="Escreva o aviso...">'+attr(formBody)+'</textarea>'
         + '</div>'
+        + '<div>'
+          + '<label class="field-label" for="f-image">Imagem (opcional)</label>'
+          + '<input id="f-image" type="file" accept="image/*" class="field-input" style="padding:8px;">'
+          + (formImagePreviewUrl ? '<div class="image-preview"><img src="'+formImagePreviewUrl+'"><button type="button" class="image-remove" id="image-remove-btn">Remover</button></div>' : '')
+        + '</div>'
         + '<button type="button" class="add-btn" id="add-btn"'+(saving?' disabled':'')+'>'+(saving?'A publicar…':'Publicar aviso')+'</button>'
         + (statusMsg ? '<p class="status-msg '+(statusIsError?'error':'ok')+'">'+attr(statusMsg)+'</p>' : '')
       + '</div>';
@@ -180,6 +214,7 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
       return '<div class="aviso-card">'
         + '<div class="aviso-head"><h3 class="aviso-title">'+attr(a.title)+'</h3><span class="aviso-date">'+attr(a.date)+'</span></div>'
         + '<p class="aviso-body">'+attr(a.body)+'</p>'
+        + (a.image ? '<img class="aviso-img" src="'+attr(a.image)+'" loading="lazy">' : '')
         + (unlocked ? '<button type="button" class="aviso-remove" data-id="'+attr(a.id)+'">Remover</button>' : '')
       + '</div>';
     }).join('');
@@ -244,6 +279,24 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
     if(fDate){ fDate.addEventListener('input', function(){ formDate = fDate.value; }); }
     var fBody = root.querySelector('#f-body');
     if(fBody){ fBody.addEventListener('input', function(){ formBody = fBody.value; }); }
+
+    var fImage = root.querySelector('#f-image');
+    if(fImage){ fImage.addEventListener('change', function(){
+      var file = fImage.files && fImage.files[0];
+      if(!file){ return; }
+      readAndResizeImage(file, 1280, 0.75, function(dataUrl){
+        formImagePreviewUrl = dataUrl;
+        formImageBase64 = dataUrl.split(',')[1];
+        render();
+      });
+    }); }
+
+    var imageRemoveBtn = root.querySelector('#image-remove-btn');
+    if(imageRemoveBtn){ imageRemoveBtn.addEventListener('click', function(){
+      formImagePreviewUrl = null;
+      formImageBase64 = null;
+      render();
+    }); }
 
     var addBtn = root.querySelector('#add-btn');
     if(addBtn){ addBtn.addEventListener('click', function(){ publishAviso(); }); }
@@ -313,14 +366,14 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
     fetch('/api/avisos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ syncKey: syncKey, action: 'add', title: formTitle, date: formDate, body: formBody })
+      body: JSON.stringify({ syncKey: syncKey, action: 'add', title: formTitle, date: formDate, body: formBody, image: formImageBase64 })
     }).then(function(r){
       if(r.status === 401){ throw {authFailed:true}; }
       if(!r.ok){ return r.text().then(function(t){ throw {status:r.status, body:t.slice(0,150)}; }); }
       return r.json();
     }).then(function(data){
       avisos = data.avisos || avisos;
-      formTitle = ''; formDate = ''; formBody = '';
+      formTitle = ''; formDate = ''; formBody = ''; formImageBase64 = null; formImagePreviewUrl = null;
       saving = false;
       statusMsg = 'Aviso publicado!';
       statusIsError = false;

@@ -1,4 +1,4 @@
-import { json, corsHeaders, githubConfig, getFile, putFileWithRetry, checkSyncKey } from "./_lib.mjs";
+import { json, corsHeaders, githubConfig, getFile, putFileWithRetry, checkSyncKey, contentsUrl } from "./_lib.mjs";
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -35,12 +35,33 @@ export default async (req) => {
 
     let next;
     if (action === "add") {
+      const id = uid();
       const aviso = {
-        id: uid(),
+        id,
         title: String(body.title || "").slice(0, 200),
         date: String(body.date || "").slice(0, 50),
         body: String(body.body || "").slice(0, 1000)
       };
+      if (body.image) {
+        const imgPath = `avisos-img/${id}.jpg`;
+        const imgPayload = {
+          message: "Adiciona imagem do aviso",
+          content: body.image,
+          branch: cfg.BRANCH
+        };
+        const imgResp = await fetch(contentsUrl(cfg, imgPath), {
+          method: "PUT",
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${cfg.TOKEN}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(imgPayload)
+        });
+        if (imgResp.ok) {
+          aviso.image = imgPath;
+        }
+      }
       next = [aviso, ...current];
     } else if (action === "delete") {
       next = current.filter((a) => a.id !== body.id);

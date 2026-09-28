@@ -100,6 +100,7 @@ a{color:inherit;}
 .fb-embed{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;}
 .fb-embed iframe{display:block;width:100%;}
 .empty-hint{color:var(--muted);font-size:13px;text-align:center;padding:14px;}
+.aviso-img{width:100%;border-radius:10px;margin-top:6px;display:block;}
 </style>
 </head>
 <body>
@@ -253,6 +254,7 @@ a{color:inherit;}
       return '<div class="aviso-card">'
         + '<div class="aviso-head"><h3 class="aviso-title">'+attr(a.title)+'</h3><span class="aviso-date">'+attr(a.date)+'</span></div>'
         + '<p class="aviso-body">'+attr(a.body)+'</p>'
+        + (a.image ? '<img class="aviso-img" src="'+attr(a.image)+'" loading="lazy">' : '')
       + '</div>';
     }).join('');
   }).catch(function(){
