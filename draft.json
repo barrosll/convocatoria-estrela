@@ -15,23 +15,7 @@
       "staff": "Bento  961842363  /  Hélder  919228079",
       "horario": "",
       "local": "",
-      "players": [
-        {
-          "id": "pf0008em",
-          "name": "André",
-          "call": true
-        },
-        {
-          "id": "psex3goi",
-          "name": "Léo",
-          "call": true
-        },
-        {
-          "id": "p2c17ykf",
-          "name": "Tiago",
-          "call": true
-        }
-      ],
+      "players": [],
       "concentracao": ""
     }
   }
