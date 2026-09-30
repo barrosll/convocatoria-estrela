@@ -6,23 +6,7 @@
       "data": "26/09/2026",
       "horario": "11:00",
       "staff": "Bento  961842363  /  Hélder  919228079",
-      "players": [
-        {
-          "id": "p1",
-          "name": "Felipe",
-          "call": true
-        },
-        {
-          "id": "p3",
-          "name": "Manu",
-          "call": true
-        },
-        {
-          "id": "p5",
-          "name": "Gustavo",
-          "call": true
-        }
-      ],
+      "players": [],
       "concentracao": "10:15"
     },
     "domingo": {
