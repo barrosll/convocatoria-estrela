@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site em manutenção — Estrela Afonsoeirense</title>
+<link rel="icon" type="image/png" href="crest.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#0b0b0c;
+  --yellow:#f4c60c;
+  --text:#f5f3ea;
+  --muted:#9a958c;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}
+.box{max-width:420px;display:flex;flex-direction:column;align-items:center;gap:18px;}
+.crest{width:84px;height:84px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));}
+.eyebrow{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--yellow);text-transform:uppercase;margin:0;}
+.title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(24px,6vw,34px);letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1.1;}
+.msg{font-size:15px;color:var(--muted);margin:0;line-height:1.6;}
+.chant{background:var(--yellow);color:var(--bg);border-radius:16px;padding:16px 20px;margin-top:8px;}
+.chant p{margin:0;font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;letter-spacing:.04em;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="box">
+  <img class="crest" src="crest.png" alt="Estrela Afonsoeirense">
+  <p class="eyebrow">Estrela Futebol Clube Afonsoeirense</p>
+  <h1 class="title">Site em manutenção</h1>
+  <p class="msg">Estamos a fazer alguns ajustes. O site volta a estar disponível em breve. Obrigado pela paciência.</p>
+  <div class="chant"><p>Estrela! Estrela! Estrela!</p></div>
+</div>
+</body>
+</html>
