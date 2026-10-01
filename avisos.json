@@ -1,11 +1,18 @@
 {
-  "avisos": [
-    {
-      "id": "f6vpvq2m",
-      "title": "Benjamins  a espalhar mágia ",
-      "date": "",
-      "body": "Todos pronto para mais uma época 26/27",
-      "image": "avisos-img/f6vpvq2m.jpg"
-    }
-  ]
+    "avisos":  [
+                   {
+                       "id":  "bchzmdex",
+                       "title":  "Rola Bola 2027 - 1a Etapa",
+                       "date":  "05/10",
+                       "body":  "Petizes, Traquinas, Benjamins e Infantis. Dia 5 de outubro.",
+                       "image":  "avisos-img/bchzmdex.jpg"
+                   },
+                   {
+                       "id":  "f6vpvq2m",
+                       "title":  "Benjamins  a espalhar mágia ",
+                       "date":  "",
+                       "body":  "Todos pronto para mais uma época 26/27",
+                       "image":  "avisos-img/f6vpvq2m.jpg"
+                   }
+               ]
 }
