@@ -1,13 +1,79 @@
 {
   "games": {
     "sabado": {
-      "local": "",
-      "adversario": "",
-      "data": "",
-      "horario": "",
+      "local": "Campo Luciano Carreira (Baixa da banheira)",
+      "adversario": "Escola D. João l",
+      "data": "03/09/2026",
+      "horario": "11:45",
       "staff": "Bento  961842363  /  Hélder  919228079",
-      "players": [],
-      "concentracao": ""
+      "players": [
+        {
+          "id": "pv34i1d5",
+          "name": "Filipe",
+          "call": true
+        },
+        {
+          "id": "p85xloj5",
+          "name": "Rafa",
+          "call": true
+        },
+        {
+          "id": "p0ofjjf4",
+          "name": "Lorenzo",
+          "call": true
+        },
+        {
+          "id": "pmpl9ado",
+          "name": "Manu",
+          "call": true
+        },
+        {
+          "id": "pqwcjn7m",
+          "name": "Santiago A.",
+          "call": true
+        },
+        {
+          "id": "p5pzafcq",
+          "name": "Santiago",
+          "call": true
+        },
+        {
+          "id": "p6ujaufg",
+          "name": "Henrique",
+          "call": true
+        },
+        {
+          "id": "pymrcvmo",
+          "name": "André",
+          "call": true
+        },
+        {
+          "id": "peo1l1nl",
+          "name": "Bernardo",
+          "call": true
+        },
+        {
+          "id": "pqhs0jjw",
+          "name": "Gabriel",
+          "call": true
+        },
+        {
+          "id": "paf5zsno",
+          "name": "João",
+          "call": true
+        },
+        {
+          "id": "pz5ntrcm",
+          "name": "Gustavo",
+          "call": true
+        },
+        {
+          "id": "pm8ge144",
+          "name": "Léo",
+          "call": true
+        }
+      ],
+      "concentracao": "11:20"
     },
     "domingo": {
       "data": "",
