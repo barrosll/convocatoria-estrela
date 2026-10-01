@@ -146,34 +146,20 @@ a{color:inherit;}
     <div class="nav-bar">
       <a class="nav-item" href="index.html">Início</a>
       <button type="button" class="nav-item" id="clube-toggle">
-        Clube
+        Benjamins B
         <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
       </button>
-      <a class="nav-item" href="sorteio-benjamins.pdf" target="_blank" rel="noopener">Sorteio</a>
       <a class="nav-item" href="torneio.html">Torneio</a>
-      <a class="nav-item" href="loja.html">Loja</a>
     </div>
     <div class="clube-dropdown" id="clube-dropdown">
       <div id="clube-menu-view" style="display:flex;flex-direction:column;gap:2px;">
-        <p class="clube-dropdown-label">Escalões</p>
-        <button type="button" class="clube-team-toggle" id="benjamins-toggle">
-          <span>Benjamins B</span>
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
-        </button>
-        <div class="clube-team-sub" id="benjamins-sub">
-          <a class="clube-sublink" href="convocatoria.html">Convocação</a>
-          <button type="button" class="clube-sublink" id="resultados-toggle">Últimos resultados</button>
-        </div>
-        <span class="clube-link soon">Petizes A <span class="tag">Em breve</span></span>
-        <span class="clube-link soon">Petizes B <span class="tag">Em breve</span></span>
-        <span class="clube-link soon">Traquinas A <span class="tag">Em breve</span></span>
-        <span class="clube-link soon">Traquinas B <span class="tag">Em breve</span></span>
-        <span class="clube-link soon">Escola Fut 7 <span class="tag">Em breve</span></span>
+        <a class="clube-sublink" href="convocatoria.html">Convocação</a>
+        <button type="button" class="clube-sublink" id="resultados-toggle">Últimos resultados</button>
       </div>
       <div class="clube-results" id="clube-results">
         <button type="button" class="clube-back" id="results-back">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
-          Escalões
+          Benjamins B
         </button>
         <p class="clube-results-title">Benjamins B — Últimos jogos</p>
         <div id="clube-results-list" style="display:flex;flex-direction:column;gap:8px;">
@@ -280,15 +266,6 @@ a{color:inherit;}
     if(ge > ga){ return { label: 'Vitória', color: '#3ecf8e' }; }
     if(ge < ga){ return { label: 'Derrota', color: '#e5484d' }; }
     return { label: 'Empate', color: '#f4c60c' };
-  }
-
-  var benjaminsToggle = document.getElementById('benjamins-toggle');
-  var benjaminsSub = document.getElementById('benjamins-sub');
-  if(benjaminsToggle && benjaminsSub){
-    benjaminsToggle.addEventListener('click', function(){
-      var open = benjaminsSub.classList.toggle('show');
-      benjaminsToggle.classList.toggle('open', open);
-    });
   }
 
   var resultadosToggle = document.getElementById('resultados-toggle');
