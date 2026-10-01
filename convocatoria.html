@@ -1,4 +1,4 @@
-﻿﻿<!doctype html>
+﻿<!doctype html>
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
@@ -59,6 +59,9 @@ body{background:var(--bg);color:var(--text);margin:0;font-family:'Barlow',system
 .field-input::placeholder{color:var(--muted);font-weight:500;}
 .field-value{font-family:'Barlow',sans-serif;font-weight:600;font-size:15px;color:var(--text);font-variant-numeric:tabular-nums;}
 .muted-val{color:var(--muted);font-weight:500;font-style:italic;}
+.field-maplink{display:inline-flex;align-items:center;gap:5px;color:var(--yellow);text-decoration:none;}
+.field-maplink:hover{text-decoration:underline;}
+.field-maplink svg{flex:0 0 auto;}
 .field.full{grid-column:1/-1;}
 
 .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:2px solid var(--yellow);padding-bottom:8px;}
@@ -287,8 +290,19 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
       + '</div>';
   }
 
-  function readField(label,value,placeholder){
-    var shown = value ? attr(value) : '<span class="muted-val">'+placeholder+'</span>';
+  function readField(label,value,placeholder,mapLink){
+    var shown;
+    if(value){
+      shown = attr(value);
+      if(mapLink){
+        shown = '<a class="field-maplink" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(value) + '" target="_blank" rel="noopener">'
+          + shown
+          + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path></svg>'
+          + '</a>';
+      }
+    } else {
+      shown = '<span class="muted-val">'+placeholder+'</span>';
+    }
     return '<div class="field">'
       + '<span class="field-label">'+label+'</span>'
       + '<div class="field-value">'+shown+'</div>'
@@ -444,7 +458,7 @@ input[type=checkbox].player-check:checked::after{content:'';position:absolute;le
       + gameTabsHTML()
       + headerHTML('Verifique se o seu educando foi convocado para este jogo')
       + '<div class="info-grid">'
-        + readField('Local do jogo', state.local, 'A confirmar')
+        + readField('Local do jogo', state.local, 'A confirmar', true)
         + readField('Adversário', state.adversario, 'A confirmar')
         + readField('Data', state.data, 'A confirmar')
         + readField('Horário do jogo', state.horario, 'A confirmar')
