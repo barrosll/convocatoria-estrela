@@ -33,11 +33,6 @@
           "call": true
         },
         {
-          "id": "p5pzafcq",
-          "name": "Santiago",
-          "call": true
-        },
-        {
           "id": "p6ujaufg",
           "name": "Henrique",
           "call": true
@@ -73,7 +68,7 @@
           "call": true
         }
       ],
-      "concentracao": "11:20"
+      "concentracao": "11:10"
     },
     "domingo": {
       "data": "",
