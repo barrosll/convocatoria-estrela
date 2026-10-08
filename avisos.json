@@ -1,18 +1,23 @@
 {
-    "avisos":  [
-                   {
-                       "id":  "bchzmdex",
-                       "title":  "Rola Bola 2027 - 1a Etapa",
-                       "date":  "05/10",
-                       "body":  "Petizes, Traquinas, Benjamins e Infantis. Dia 5 de outubro.",
-                       "image":  "avisos-img/bchzmdex.jpg"
-                   },
-                   {
-                       "id":  "f6vpvq2m",
-                       "title":  "Benjamins  a espalhar mágia ",
-                       "date":  "",
-                       "body":  "Todos pronto para mais uma época 26/27",
-                       "image":  "avisos-img/f6vpvq2m.jpg"
-                   }
-               ]
+  "avisos": [
+    {
+      "id": "vid26equip",
+      "title": "Novo equipamento 2026/27",
+      "date": "",
+      "body": "Vídeo promocional do novo equipamento do Estrela.",
+      "video": "videos/equipamento-2026.mp4"
+    },
+    {
+      "id": "bchzmdex",
+      "title": "Rola Bola 2027 - 1a Etapa",
+      "date": "05/10",
+      "body": "Petizes, Traquinas, Benjamins e Infantis. Dia 5 de outubro."
+    },
+    {
+      "id": "f6vpvq2m",
+      "title": "Benjamins  a espalhar mágia ",
+      "date": "",
+      "body": "Todos pronto para mais uma época 26/27"
+    }
+  ]
 }
