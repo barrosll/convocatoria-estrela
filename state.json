@@ -1,10 +1,10 @@
 {
   "games": {
     "sabado": {
-      "local": "Campo Luciano Carreira (Baixa da banheira)",
-      "adversario": "Escola D. João l",
-      "data": "03/09/2026",
-      "horario": "11:45",
+      "local": "Brejos Azeitão ",
+      "adversario": "Botafogo ",
+      "data": "10/09/2026",
+      "horario": "10:30",
       "staff": "Bento  961842363  /  Hélder  919228079",
       "players": [
         {
@@ -13,62 +13,67 @@
           "call": true
         },
         {
-          "id": "p85xloj5",
-          "name": "Rafa",
-          "call": true
-        },
-        {
           "id": "p0ofjjf4",
           "name": "Lorenzo",
           "call": true
         },
         {
-          "id": "pmpl9ado",
-          "name": "Manu",
-          "call": true
-        },
-        {
-          "id": "pqwcjn7m",
-          "name": "Santiago A.",
-          "call": true
-        },
-        {
-          "id": "p6ujaufg",
-          "name": "Henrique",
-          "call": true
-        },
-        {
-          "id": "pymrcvmo",
-          "name": "André",
-          "call": true
-        },
-        {
-          "id": "peo1l1nl",
+          "id": "pol73tn0",
           "name": "Bernardo",
           "call": true
         },
         {
-          "id": "pqhs0jjw",
-          "name": "Gabriel",
+          "id": "pkjxrbnd",
+          "name": "Manu",
           "call": true
         },
         {
-          "id": "paf5zsno",
+          "id": "per5iulv",
+          "name": "André",
+          "call": true
+        },
+        {
+          "id": "pgx2ghov",
+          "name": "Nuno",
+          "call": true
+        },
+        {
+          "id": "p9bhpsa4",
+          "name": "Henrique",
+          "call": true
+        },
+        {
+          "id": "pwl1ebst",
+          "name": "Santiago A",
+          "call": true
+        },
+        {
+          "id": "p0yohyc7",
           "name": "João",
           "call": true
         },
         {
-          "id": "pz5ntrcm",
-          "name": "Gustavo",
+          "id": "pt8thxyy",
+          "name": "Gabriel",
           "call": true
         },
         {
-          "id": "pm8ge144",
-          "name": "Léo",
+          "id": "p3x6h99g",
+          "name": "Santiago",
+          "call": true
+        },
+        {
+          "id": "pbhh8pqq",
+          "name": "Rafa",
+          "call": true
+        },
+        {
+          "id": "p1lt7128",
+          "name": "Tiago",
           "call": true
         }
       ],
-      "concentracao": "11:10"
+      "concentracao": "09:30"
     },
     "domingo": {
       "data": "",
