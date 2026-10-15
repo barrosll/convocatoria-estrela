@@ -73,7 +73,7 @@
           "call": true
         }
       ],
-      "concentracao": "10"
+      "concentracao": "10:00"
     },
     "domingo": {
       "data": "",
