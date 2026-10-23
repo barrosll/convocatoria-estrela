@@ -1,9 +1,9 @@
 {
   "games": {
     "sabado": {
-      "local": "Campo Municipal Afonsoeirense ",
-      "adversario": "G.D. Alcochetense ",
-      "data": "17/10/2026",
+      "local": "Quintajense Futebol Clube",
+      "adversario": "Quintajense Fc",
+      "data": "24/10/2026",
       "horario": "11:00",
       "staff": "Bento  961842363  /  Hélder  919228079",
       "players": [
@@ -14,22 +14,22 @@
         },
         {
           "id": "p0ofjjf4",
-          "name": "Lorenzo",
+          "name": "Léo",
           "call": true
         },
         {
           "id": "pkjxrbnd",
-          "name": "Manu",
+          "name": "Lorenzo",
           "call": true
         },
         {
           "id": "per5iulv",
-          "name": "André",
+          "name": "Manu",
           "call": true
         },
         {
           "id": "pgx2ghov",
-          "name": "Nuno",
+          "name": "Gabriel",
           "call": true
         },
         {
@@ -44,27 +44,27 @@
         },
         {
           "id": "p0yohyc7",
-          "name": "João",
+          "name": "Santiago",
           "call": true
         },
         {
           "id": "pt8thxyy",
-          "name": "Gabriel",
+          "name": "João",
           "call": true
         },
         {
           "id": "p3x6h99g",
-          "name": "Santiago ",
+          "name": "Tiago",
           "call": true
         },
         {
           "id": "p7no1ll2",
-          "name": "Afonso",
+          "name": "Nuno",
           "call": true
         },
         {
           "id": "p2fg9hrf",
-          "name": "Léo",
+          "name": "Bernardo",
           "call": true
         }
       ],
