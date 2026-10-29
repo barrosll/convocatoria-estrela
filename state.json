@@ -1,20 +1,15 @@
 {
   "games": {
     "sabado": {
-      "local": "Quintajense Futebol Clube",
-      "adversario": "Quintajense Fc",
-      "data": "24/10/2026",
-      "horario": "11:00",
+      "local": "Campo Municipal Estrela Afonsoeirense ",
+      "adversario": "Juventude Sarilhense ",
+      "data": "31/10/2026",
+      "horario": "11:45",
       "staff": "Bento  961842363  /  Hélder  919228079",
       "players": [
         {
           "id": "pv34i1d5",
           "name": "Filipe",
-          "call": true
-        },
-        {
-          "id": "p0ofjjf4",
-          "name": "Léo",
           "call": true
         },
         {
@@ -66,9 +61,14 @@
           "id": "p2fg9hrf",
           "name": "Bernardo",
           "call": true
+        },
+        {
+          "id": "pscj4zrh",
+          "name": "Gustavo",
+          "call": true
         }
       ],
-      "concentracao": "10:00"
+      "concentracao": "10:40"
     },
     "domingo": {
       "data": "",
