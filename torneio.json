@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-20T09:00:35.026Z",
+  "updatedAt": "2026-11-03T09:01:30.314Z",
   "jornadas": [
     {
       "numero": 1,
@@ -68,18 +68,18 @@
       "numero": 4,
       "jogos": [
         {
-          "home": "Efc Afonsoeirense",
-          "away": "Jfc Sarilhense",
+          "home": "Botafogo Fc Cabanas",
+          "away": "Quintajense Fc",
           "sched": "31 out 10:30",
-          "stadium": "Campo Municipal Do Afonsoeiro",
+          "stadium": "Campo Brejoeira N&#186; 1",
           "scoreHome": null,
           "scoreAway": null
         },
         {
-          "home": "Botafogo Fc Cabanas",
-          "away": "Quintajense Fc",
-          "sched": "31 out 10:30",
-          "stadium": "A Indicar",
+          "home": "Efc Afonsoeirense",
+          "away": "Jfc Sarilhense",
+          "sched": "31 out 11:45",
+          "stadium": "Campo Municipal Do Afonsoeiro",
           "scoreHome": null,
           "scoreAway": null
         }
