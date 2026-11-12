@@ -1,10 +1,10 @@
 {
   "games": {
     "sabado": {
-      "local": "Campo Municipal Estrela Afonsoeirense ",
-      "adversario": "Juventude Sarilhense ",
-      "data": "31/10/2026",
-      "horario": "11:45",
+      "local": "Academia de Futebol do Barreirense ",
+      "adversario": "G.D.Alfarim e F.C.Barreirense ",
+      "data": "14/11/2026",
+      "horario": "16:00",
       "staff": "Bento  961842363  /  Hélder  919228079",
       "players": [
         {
@@ -38,11 +38,6 @@
           "call": true
         },
         {
-          "id": "p0yohyc7",
-          "name": "Santiago",
-          "call": true
-        },
-        {
           "id": "pt8thxyy",
           "name": "João",
           "call": true
@@ -58,17 +53,32 @@
           "call": true
         },
         {
-          "id": "p2fg9hrf",
-          "name": "Bernardo",
-          "call": true
-        },
-        {
           "id": "pscj4zrh",
           "name": "Gustavo",
           "call": true
+        },
+        {
+          "id": "p7bd0680",
+          "name": "Théo",
+          "call": true
+        },
+        {
+          "id": "ppjjihm2",
+          "name": "Afonso",
+          "call": true
+        },
+        {
+          "id": "pkwaf5h6",
+          "name": "André",
+          "call": true
+        },
+        {
+          "id": "p7oqofl9",
+          "name": "Léo",
+          "call": true
         }
       ],
-      "concentracao": "10:40"
+      "concentracao": "15:00"
     },
     "domingo": {
       "data": "",
